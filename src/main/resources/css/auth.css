@@ -1,0 +1,6 @@
+.pane-logo {
+    -fx-background-image: url('../images/emergency-assistant-high-resolution-logo-transparent.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+    -fx-background-position: center;
+}

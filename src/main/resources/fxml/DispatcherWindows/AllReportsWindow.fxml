@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="620.0" prefWidth="859.0" stylesheets="@../../css/ReportsStylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.AllReportsController">
+
+    <Button fx:id="toggleMenuButton" onAction="#toggleMenu" prefWidth="230.0" text="☰" />
+
+    <TableView fx:id="tableView" layoutX="19.0" layoutY="30.0" prefHeight="581.0" prefWidth="818.0" styleClass="custom-table" stylesheets="@../../css/TableStyle.css" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="19.800000000000068" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="30.0">
+        <columns>
+            <TableColumn fx:id="id" prefWidth="97.60000419616699" text="№ Заявления" />
+            <TableColumn fx:id="type" prefWidth="303.20001220703125" text="Тип происшетсвия" />
+            <TableColumn fx:id="timestamp" prefWidth="104.79995727539062" text="Дата и время" />
+            <TableColumn id="d" fx:id="place" prefWidth="104.0" text="Место" />
+            <TableColumn fx:id="fio" prefWidth="92.7999267578125" text="Заявитель" />
+            <TableColumn fx:id="wasSeen" prefWidth="75.0" text="Статус" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
+    <VBox fx:id="burgerMenu" alignment="CENTER" layoutY="30" prefHeight="390.0" prefWidth="230.0" spacing="10" style="-fx-background-color: lightgray;" stylesheets="@../../css/ReportsStylesheet.css" visible="false">
+        <Button fx:id="toReportsListButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#toReportsList" text="К списку заявлений 📋" visible="false" />
+        <Button fx:id="openSaveDirectoryButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#openSaveDirectory" text="К отчетам 📃" />
+        <VBox VBox.vgrow="ALWAYS" />
+        <Button fx:id="toAuthWindowButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#toAuthWindow" text="Выйти 🚪" />
+    </VBox>
+
+</AnchorPane>

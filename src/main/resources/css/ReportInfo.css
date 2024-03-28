@@ -1,0 +1,24 @@
+.root {
+    -fx-background-color: #aed2ca;
+    /*-fx-background-image: url('/images/background4.jpg');*/
+    /*-fx-background-repeat: no-repeat;*/
+    /*-fx-background-size: cover; */
+    /*-fx-background-position: center; */
+
+}
+
+.bold-white-label {
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+}
+
+.buttons{
+    -fx-background-color: #1e2f56;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.need_to_be_done_label{
+    -fx-text-fill: white; /* Устанавливаем цвет текста на белый */
+    -fx-underline: true;
+    -fx-background-color: #1e2f56;/* Добавляем подчеркивание */
+}

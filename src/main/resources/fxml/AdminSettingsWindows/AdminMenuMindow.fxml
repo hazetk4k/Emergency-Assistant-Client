@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="549.0" prefWidth="982.0" stylesheets="@../../css/AmdinMenu.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.AdminController.AdminMenuController">
+
+    <VBox fx:id="burgerMenu" alignment="CENTER" layoutY="-2.0" prefHeight="430.0" prefWidth="440.0" spacing="10" style="-fx-background-color:  #aed2ca;" stylesheets="@../../css/AmdinMenu.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" text="Управление данными по чрезвычайным ситуациям" textFill="WHITE" VBox.vgrow="ALWAYS">
+         <font>
+            <Font name="Arial Bold" size="16.0" />
+         </font>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </Label>
+      <VBox prefHeight="141.0" prefWidth="440.0" />
+        <Button fx:id="btnOpenKinds" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openKindOptions" prefWidth="419.0" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К таблице видов ЧС 🛠">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font></Button>
+      <Button fx:id="btnOpenTypes" maxWidth="Infinity" mnemonicParsing="false" onAction="#openTypeOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К таблице типов ЧС 🛠">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnOpenRels" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openRelationsOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К списку видов и относящихся к ним служб 🛠">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnOpenUsers" maxWidth="Infinity" mnemonicParsing="false" onAction="#openUserOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К таблице пользователей системы 🛠">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </Button>
+        <VBox prefHeight="294.0" prefWidth="335.0" VBox.vgrow="ALWAYS" />
+        <Button fx:id="btnBackToAuth" maxWidth="Infinity" mnemonicParsing="false" onAction="#backToAuth" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Выйти 🚪">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font></Button>
+    </VBox>
+   <Pane layoutX="463.0" layoutY="144.0" prefHeight="223.0" prefWidth="488.0" styleClass="logo" />
+
+</AnchorPane>

@@ -1,0 +1,47 @@
+.root {
+    /* Настройка фона для AnchorPane */
+    -fx-background-image: url('../images/Dispetcher.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover; /* Сохраняет исходный размер изображения */
+    -fx-background-position: center; /* Центрирует изображение */
+    /* Другие свойства, если нужно */
+}
+
+#burgerMenu {
+    /* Настройка фона для VBox */
+    -fx-background-color: lightblue; /* Задайте нужный цвет */
+    -fx-background-image: url('../images/Dispetcher2.png'); /* Задайте путь к вашему изображению */
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover; /* Сохраняет исходный размер изображения */
+    -fx-background-position: center; /* Центрирует изображение */
+    /* Другие свойства, если нужно */
+    -fx-border-color: #192748; /* Цвет границ */
+    -fx-border-width: 2 5 2 5; /* Толщина границ (в пикселях) */
+}
+
+#burgerMenu #button1,
+#burgerMenu #button2,
+#burgerMenu #button3 {
+    -fx-background-color: #192748; /* Темно-синий цвет фона */
+    -fx-text-fill: white; /* Белый цвет текста */
+    /* Другие свойства, если нужно */
+    -fx-min-height: 20px;
+    -fx-font-size: 14px;
+}
+
+@media only screen and (min-width: 1200px) {
+    .custom-table {
+        -fx-min-width: calc(100% - 200px); /* Ширина экрана минус 300px */
+    }
+}
+
+#burgerMenu #button1,
+#burgerMenu #button2 {
+    -fx-font-weight: bold; /* Жирный шрифт */
+}
+
+#toggleMenuButton {
+    -fx-background-color: #192748; /* Темно-синий цвет фона */
+    -fx-text-fill: white; /* Белый цвет текста */
+    /* Другие свойства, если нужно */
+}
