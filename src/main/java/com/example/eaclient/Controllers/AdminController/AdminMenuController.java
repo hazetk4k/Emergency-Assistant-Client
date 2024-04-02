@@ -3,7 +3,10 @@ package com.example.eaclient.Controllers.AdminController;
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Service.ServiceSingleton;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -41,14 +44,70 @@ public class AdminMenuController implements Initializable {
     }
 
     public void openUserOptions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminSettingsWindows/UserViewWindow.fxml"));
+            Parent root = loader.load();
+
+            UserViewController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            stage.setTitle("Управление пользователями");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void openTypeOptions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminSettingsWindows/TypeViewWindow.fxml"));
+            Parent root = loader.load();
+
+            TypeViewController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            stage.setTitle("Управление типами ЧС");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void openKindOptions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminSettingsWindows/KindViewWindow.fxml"));
+            Parent root = loader.load();
+
+            KindViewController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            stage.setTitle("Управление видами ЧС");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void openRelationsOptions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminSettingsWindows/RelationsViewWindow.fxml"));
+            Parent root = loader.load();
+
+            RelationsViewController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            stage.setTitle("Управление связями между видом ЧС и службами реагирования");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

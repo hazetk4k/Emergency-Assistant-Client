@@ -42,7 +42,6 @@ public class AuthController {
 
             // Попытка отправить запрос
             HttpResponse response = SimpleRequestManager.sendPostRequest("/system-sign-in", requestBody);
-            System.out.println("skibidi-log");
             int responseCode = response.getResponseCode();
             // Проверяем код состояния ответа
             if (responseCode == 401) {
@@ -62,6 +61,7 @@ public class AuthController {
                 String responseBody = response.getResponseBody();
                 JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
                 String status = jsonObject.get("status").getAsString();
+                //сверяем статус
                 if (Objects.equals(status, "1")) {
                     manager.openFxmlScene("/fxml/AdminSettingsWindows/AdminMenuWindow.fxml", "Меню настройки базы данных системы");
                     ServiceSingleton.getInstance().setIfClosed(true);
