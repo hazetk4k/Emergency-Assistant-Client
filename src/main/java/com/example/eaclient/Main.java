@@ -18,7 +18,7 @@ public class Main extends Application {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                System.out.println("Сервер выключен");
+                System.out.println("Работа завершена");
                 System.exit(0);
             }
         });

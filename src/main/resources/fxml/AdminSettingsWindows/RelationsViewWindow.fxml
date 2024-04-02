@@ -10,122 +10,128 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="658.0" prefWidth="1055.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.AdminController.RelationsViewController">
-   <children>
-      <VBox prefHeight="658.0" prefWidth="378.0" HBox.hgrow="ALWAYS">
-         <children>
-            <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="666.0" style="-fx-background-color: #1e2f56;" text="Список видов и служб, реагрующих на ЧС данного вида" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <TreeView fx:id="relationsTreeView" prefHeight="566.0" prefWidth="587.0" VBox.vgrow="ALWAYS" />
-         </children>
-      </VBox>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #aed2ca;" HBox.hgrow="ALWAYS">
-         <children>
-            <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="388.0" style="-fx-background-color: #1e2f56;" text="Добавить новую связь службы и вида ЧС" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label maxWidth="1.7976931348623157E308" text="Выберите вид ЧС" textFill="#1e2f56">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <ChoiceBox fx:id="choiceBoxKinds" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="329.0">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-               </VBox.margin>
-            </ChoiceBox>
-            <Label maxWidth="1.7976931348623157E308" text="Выберите службу реагирования" textFill="#1e2f56">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <ChoiceBox fx:id="choiceBoxServices" maxWidth="1.7976931348623157E308" prefHeight="38.0">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-               </VBox.margin>
-            </ChoiceBox>
-            <Button onAction="#addNewRelation" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0" style="-fx-background-color: white;" text="Добавить связь" textFill="#1e2f56">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Button>
-            <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" style="-fx-background-color: #1e2f56;" text="Выберите вид ЧС для удаления его связей" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="chosenKind" editable="false" prefHeight="38.0" promptText="Вид ЧС не выбран">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-               </VBox.margin>
-            </TextField>
-            <Button onAction="#deleteAllRels" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0" style="-fx-background-color: white;" text="Удалить связи" textFill="#1e2f56">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Button>
-            <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" style="-fx-background-color: #1e2f56;" text="Выберите службу, чтобы убрать связь с видом ЧС" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="textKindOfService" editable="false" prefHeight="38.0" promptText="Здесь будет отображен вид, к которому относится служба">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-               </VBox.margin>
-            </TextField>
-            <TextField fx:id="chosenService" editable="false" prefHeight="38.0" promptText="Служба не выбрана в списке">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-               </VBox.margin>
-            </TextField>
-            <Button onAction="#deleteServiceRel" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0" style="-fx-background-color: white;" text="Удалить связь" textFill="#1e2f56">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </VBox>
-   </children>
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="658.0"
+      prefWidth="1055.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.eaclient.Controllers.AdminController.RelationsViewController">
+   <VBox prefHeight="658.0" prefWidth="378.0" HBox.hgrow="ALWAYS">
+      <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="666.0"
+             style="-fx-background-color: #1e2f56;" text="Список видов и служб, реагрующих на ЧС данного вида"
+             textFill="WHITE">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <TreeView fx:id="relationsTreeView" prefHeight="566.0" prefWidth="587.0" VBox.vgrow="ALWAYS"/>
+   </VBox>
+   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #aed2ca;"
+         HBox.hgrow="ALWAYS">
+      <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="388.0"
+             style="-fx-background-color: #1e2f56;" text="Добавить новую связь службы и вида ЧС" textFill="WHITE">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <VBox.margin>
+            <Insets bottom="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <Label maxWidth="1.7976931348623157E308" text="Выберите вид ЧС" textFill="#1e2f56">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <ChoiceBox fx:id="choiceBoxKinds" maxWidth="1.7976931348623157E308" prefHeight="38.0" prefWidth="329.0">
+         <VBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+         </VBox.margin>
+      </ChoiceBox>
+      <Label maxWidth="1.7976931348623157E308" text="Выберите службу реагирования" textFill="#1e2f56">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <ChoiceBox fx:id="choiceBoxServices" maxWidth="1.7976931348623157E308" prefHeight="38.0">
+         <VBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+         </VBox.margin>
+      </ChoiceBox>
+      <Button onAction="#addNewRelation" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0"
+              style="-fx-background-color: white;" text="Добавить связь" textFill="#1e2f56">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Button>
+      <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" style="-fx-background-color: #1e2f56;"
+             text="Выберите вид ЧС для удаления его связей" textFill="WHITE">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <VBox.margin>
+            <Insets bottom="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <TextField fx:id="chosenKind" editable="false" prefHeight="38.0" promptText="Вид ЧС не выбран">
+         <VBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+         </VBox.margin>
+      </TextField>
+      <Button onAction="#deleteAllRels" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0"
+              style="-fx-background-color: white;" text="Удалить связи" textFill="#1e2f56">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Button>
+      <Label maxWidth="1.7976931348623157E308" prefHeight="33.0" style="-fx-background-color: #1e2f56;"
+             text="Выберите службу, чтобы убрать связь с видом ЧС" textFill="WHITE">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+         </padding>
+         <VBox.margin>
+            <Insets bottom="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="Arial Bold" size="14.0"/>
+         </font>
+      </Label>
+      <TextField fx:id="textKindOfService" editable="false" prefHeight="38.0"
+                 promptText="Здесь будет отображен вид, к которому относится служба">
+         <VBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+         </VBox.margin>
+      </TextField>
+      <TextField fx:id="chosenService" editable="false" prefHeight="38.0" promptText="Служба не выбрана в списке">
+         <VBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+         </VBox.margin>
+      </TextField>
+      <Button onAction="#deleteServiceRel" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0"
+              style="-fx-background-color: white;" text="Удалить связь" textFill="#1e2f56">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+         </VBox.margin>
+         <font>
+            <Font name="System Bold" size="14.0"/>
+         </font>
+      </Button>
+   </VBox>
 </HBox>

@@ -43,7 +43,7 @@ public class AllReportsController {
 
     WindowManager manager = new WindowManager();
 
-    public void toggleMenu(ActionEvent actionEvent) {
+    public void toggleMenu() {
         TranslateTransition menuAnimation = new TranslateTransition(Duration.millis(300), burgerMenu);
 
         if (!burgerMenu.isVisible()) {
