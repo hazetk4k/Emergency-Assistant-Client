@@ -1,9 +1,11 @@
 package com.example.eaclient.Controllers.AdminController;
 
 import com.example.eaclient.Models.SystemUser;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class UserViewController {
     @FXML
@@ -33,6 +35,16 @@ public class UserViewController {
     public int userId;
 
     public void initData() {
+        choiceBoxStatus.getItems().clear();
+        choiceBoxStatus.getItems().addAll("Администратор", "Диспетчер");
+        id_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, Integer>("id_syst"));
+        login_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, String>("login_syst"));
+        status_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, String>("status_syst"));
+        systUserTable.setItems(initialData());
+    }
+
+    ObservableList<SystemUser> initialData() {
+        return null;
     }
 
     public void addNewUser(ActionEvent actionEvent) {

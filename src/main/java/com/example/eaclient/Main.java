@@ -15,6 +15,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/fxml/AuthWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
+
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

@@ -1,12 +1,12 @@
 package com.example.eaclient.Models;
 
 public class AllReportsTable {
-    private int id;
-    private String type;
-    private String timestamp;
-    private String place;
-    private String fio;
-    private Boolean wasSeen;
+    public int id;
+    public String type;
+    public String timestamp;
+    public String place;
+    public String fio;
+    public Boolean wasSeen;
 
     public String getType() {
         return type;

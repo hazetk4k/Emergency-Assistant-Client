@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class RequestExecutor {
     public static HttpResponse executeRequest(String urlString, String method, String requestBody) throws IOException {
         URL url = new URL(urlString);
-        HttpURLConnection conn = null;
+        HttpURLConnection conn;
         try{
             conn = (HttpURLConnection) url.openConnection();
         }catch (Exception e){

@@ -1,9 +1,6 @@
 package com.example.eaclient.Network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 
 public class SimpleRequestManager {
     private static final String BASE_URL = "http://localhost:8080";

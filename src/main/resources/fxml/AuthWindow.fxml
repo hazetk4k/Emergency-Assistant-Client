@@ -46,7 +46,7 @@
          </VBox.margin>
       </PasswordField>
       <VBox prefHeight="114.0" prefWidth="300.0" />
-      <Label fx:id="labelProgress" prefHeight="30.0" prefWidth="294.0"  style="-fx-background-color: #1e2f56;" text="" textFill="#1e2f56" visible="false">
+      <Label fx:id="labelProgress" prefHeight="30.0" prefWidth="294.0"  style="-fx-background-color: #1e2f56;" textFill="#1e2f56" visible="false">
          <font>
             <Font name="Arial" size="14.0" />
          </font>

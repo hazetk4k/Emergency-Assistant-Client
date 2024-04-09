@@ -1,13 +1,14 @@
 package com.example.eaclient.Controllers.AdminController;
 
-
 import com.example.eaclient.Models.KindEm;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class KindViewController {
+    @FXML
     public Button deleteKind;
+    @FXML
     public Button addNewKind;
     @FXML
     public ChoiceBox<String> charChoiceBox;
@@ -32,6 +33,7 @@ public class KindViewController {
     }
 
     public void initData() {
+
     }
 
     public void deleteThisKind(ActionEvent actionEvent) {
