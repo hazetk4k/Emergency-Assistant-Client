@@ -63,11 +63,13 @@ public class AuthController {
                 String status = jsonObject.get("status").getAsString();
                 //сверяем статус
                 if (Objects.equals(status, "1")) {
+                    ServiceSingleton.getInstance().setCurrentUser(login);
                     manager.openFxmlScene("/fxml/AdminSettingsWindows/AdminMenuWindow.fxml", "Меню настройки базы данных системы");
                     ServiceSingleton.getInstance().setIfClosed(true);
                     Stage stage = (Stage) button.getScene().getWindow();
                     stage.close();
                 } else {
+                    ServiceSingleton.getInstance().setCurrentUser(login);
                     manager.openFxmlScene("/fxml/DispatcherWindows/AllReportsWindow.fxml", "Отслеживание новых заявлений");
                     ServiceSingleton.getInstance().setIfClosed(true);
                     Stage stage = (Stage) button.getScene().getWindow();

@@ -1,9 +1,9 @@
 package com.example.eaclient.Models;
 
 public class KindEm {
-    private Integer kind_id;
-    private String kind_name;
-    private String char_name;
+    public Integer kind_id;
+    public String kind_name;
+    public String char_name;
 
     public Integer getKind_id() {
         return kind_id;

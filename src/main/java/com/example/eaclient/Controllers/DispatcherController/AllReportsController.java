@@ -14,13 +14,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -29,7 +26,6 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -95,17 +91,14 @@ public class AllReportsController implements Initializable {
         stage.close();
     }
 
+    //TODO: Добавить замену timestamp на "словянский тип"
     ObservableList<AllReportsTable> initialData() {
         ObservableList<AllReportsTable> reportsTable = FXCollections.observableArrayList();
         try {
             HttpResponse httpResponse = SimpleRequestManager.sendGetRequest("/get-all-reports");
             System.out.println("Запрос отправлен");
             int response_code = httpResponse.getResponseCode();
-            if (response_code == 404) {
-                Label customPlaceholder = new Label("Заявления о ЧС отсутствуют");
-                customPlaceholder.setFont(Font.font("System", FontWeight.BOLD, 16));
-                tableView.setPlaceholder(customPlaceholder);
-            } else if (response_code == 200) {
+            if (response_code == 200) {
                 String responseBody = httpResponse.getResponseBody();
                 Type typeOfReports = new TypeToken<ArrayList<AllReportsTable>>() {
                 }.getType();
