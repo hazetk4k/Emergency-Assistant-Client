@@ -131,6 +131,8 @@ public class UserViewController {
                             showAlert("Не удалось получить id", "Что-то пошло не так.");
                         } else if (code == 404) {
                             showAlert("Не удалось найти пользователя", "Такой пользователь не найден.");
+                        } else if (code == 409) {
+                            showAlert("Не удалось провести удаление", "Данный пользователь .");
                         }
                     } catch (Exception e) {
                         System.out.println(e.getMessage());

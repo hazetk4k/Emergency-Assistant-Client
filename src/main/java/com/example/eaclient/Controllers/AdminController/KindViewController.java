@@ -1,8 +1,6 @@
 package com.example.eaclient.Controllers.AdminController;
 
-import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Models.KindEm;
-import com.example.eaclient.Models.SystemUser;
 import com.example.eaclient.Network.HttpResponse;
 import com.example.eaclient.Network.SimpleRequestManager;
 import com.google.gson.Gson;
@@ -40,7 +38,8 @@ public class KindViewController {
     public Integer selectedId;
 
     private final Gson gson = new Gson();
-//TODO: SHOW ALERT должны быть разными стилистически (типа успех и неудача)
+
+    //TODO: SHOW ALERT должны быть разными стилистически (типа успех и неудача)
     private void showAlert(String title, String warning) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -70,7 +69,7 @@ public class KindViewController {
         return kindEmList;
     }
 
-    void charSetUp() {
+    void setUpChar() {
         charChoiceBox.getItems().clear();
         List<String> listOfChars = null;
         try {
@@ -90,7 +89,7 @@ public class KindViewController {
     }
 
     public void initData() {
-        charSetUp();
+        setUpChar();
         id_kind.setCellValueFactory(new PropertyValueFactory<KindEm, Integer>("kind_id"));
         kind_name.setCellValueFactory(new PropertyValueFactory<KindEm, String>("kind_name"));
         char_name.setCellValueFactory(new PropertyValueFactory<KindEm, String>("char_name"));
@@ -120,7 +119,9 @@ public class KindViewController {
                 } else if (code == 400) {
                     showAlert("Не удалось получить имя вида ЧС", "Что-то пошло не так.");
                 } else if (code == 404) {
-                    showAlert("Не удалось найти вид ЧС", "Такой пользователь не найден.");
+                    showAlert("Не удалось найти вид ЧС", "Запись о виде " + kind_name + " не найдена.");
+                } else if (code == 409) {
+                    showAlert("Не удалось провести удаление", "Данный вид используется в других записях.");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

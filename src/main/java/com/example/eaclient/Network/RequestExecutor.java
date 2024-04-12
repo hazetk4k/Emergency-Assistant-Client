@@ -23,6 +23,7 @@ public class RequestExecutor {
 
         if (requestBody != null && !requestBody.isEmpty()) {
             byte[] postData = requestBody.getBytes(StandardCharsets.UTF_8);
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             conn.setRequestProperty("Content-Length", String.valueOf(postData.length));
             try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
                 wr.write(postData);

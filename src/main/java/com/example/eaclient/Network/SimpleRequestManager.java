@@ -26,6 +26,7 @@ public class SimpleRequestManager {
         if (queryParams != null && !queryParams.isEmpty()) {
             urlString += "?" + queryParams;
         }
+        System.out.println(urlString);
         return RequestExecutor.executeRequest(urlString, "DELETE", null);
     }
 
