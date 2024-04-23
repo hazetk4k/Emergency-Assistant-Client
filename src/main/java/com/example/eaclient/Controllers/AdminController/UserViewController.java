@@ -6,6 +6,7 @@ import com.example.eaclient.Network.SimpleRequestManager;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,6 +45,8 @@ public class UserViewController {
     public TextField chosenProfile;
     public int userId;
 
+    public String current_status;
+
     private final Gson gson = new Gson();
 
     public void initData() {
@@ -51,12 +54,17 @@ public class UserViewController {
         choiceBoxStatus.getItems().addAll("Администратор", "Диспетчер");
         id_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, Integer>("id_syst"));
         login_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, String>("login_syst"));
-        status_syst.setCellValueFactory(new PropertyValueFactory<SystemUser, String>("status_syst"));
+        status_syst.setCellValueFactory(cellData -> {
+            String status = cellData.getValue().status_syst;
+            String statusText = (Objects.equals(status, "0")) ? "Диспетчер" : "Администратор";
+            return new SimpleStringProperty(statusText);
+        });
         systUserTable.setItems(initialData());
 
         systUserTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 String value = newSelection.getLogin_syst();
+                current_status = newSelection.status_syst;
                 userId = newSelection.getId_syst();
                 chosenProfile.setText(value);
             }
@@ -88,7 +96,7 @@ public class UserViewController {
         String password = passwordField.getText();
 
         if (login.isEmpty() || password.isEmpty()) {
-            showAlert("Ошибка", "Введите логин и пароль");
+            showAlert("Ошибка", "Введите логин и пароль", 2);
             return;
         }
 
@@ -103,36 +111,43 @@ public class UserViewController {
         newUserData.put("password", password);
         newUserData.put("status", status);
         try {
-            SimpleRequestManager.sendPostRequest("/add-new-user", gson.toJson(newUserData));
+            HttpResponse httpResponse = SimpleRequestManager.sendPostRequest("/add-new-user", gson.toJson(newUserData));
+            int code = httpResponse.getResponseCode();
+            if (code == 409) {
+                loginField.clear();
+                passwordField.clear();
+                showAlert("Ошибка!", "Такой пользователь уже существует", 2);
+            } else if (code == 200) {
+                loginField.clear();
+                passwordField.clear();
+                showAlert("Успешно!", "Добавлен новый пользователь. Логин: " + login + ", Пароль:" + password, 1);
+                initData();
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        loginField.clear();
-        passwordField.clear();
-        showAlert("Успешно!", "Добавлен новый пользователь. Логин: " + login + ", Пароль:" + password);
-        initData();
     }
 
     public void deleteUser(ActionEvent actionEvent) {
         if (chosenProfile.getText() != null && !Objects.equals(chosenProfile.getText(), "")) {
             if (Objects.equals(ServiceSingleton.getInstance().getCurrentUser(), chosenProfile.getText())) {
-                showAlert("Попытка удаления активного профиля!", "Остановлена попытка удаления собственного профиля!");
+                showAlert("Попытка удаления активного профиля!", "Остановлена попытка удаления собственного профиля!", 2);
             } else {
                 if (systUserTable.getSelectionModel().isEmpty()) {
-                    showAlert("Не выбран элемент таблицы!", "Выберите поле таблицы, которое хотите удалить.");
+                    showAlert("Не выбран элемент таблицы!", "Выберите поле таблицы, которое хотите удалить.", 2);
                 } else {
                     try {
                         HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-user", "user_id=" + userId);
                         int code = response.getResponseCode();
                         if (code == 200) {
-                            showAlert("Успешно!", "Пользователь с id " + userId + " был удален.");
+                            showAlert("Успешно!", "Пользователь с id " + userId + " был удален.", 1);
                             initData();
                         } else if (code == 400) {
-                            showAlert("Не удалось получить id", "Что-то пошло не так.");
+                            showAlert("Не удалось получить id", "Что-то пошло не так.", 2);
                         } else if (code == 404) {
-                            showAlert("Не удалось найти пользователя", "Такой пользователь не найден.");
+                            showAlert("Не удалось найти пользователя", "Такой пользователь не найден.", 2);
                         } else if (code == 409) {
-                            showAlert("Не удалось провести удаление", "Данный пользователь .");
+                            showAlert("Не удалось провести удаление", "Данный пользователь .", 2);
                         }
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -141,45 +156,62 @@ public class UserViewController {
                 }
             }
         } else {
-            showAlert("Пустой выбор!", "Выберите поле из таблицы, которые хотите удалить!");
+            showAlert("Не выбрана запись!", "Выберите поле из таблицы, которые хотите удалить!", 2);
         }
     }
 
-    //TODO:Запретить пользователю менять статус на тот же что и так стоит
     public void changeUserStatus(ActionEvent actionEvent) {
         if (choiceBoxStatus.getSelectionModel().getSelectedItem() == null) {
-            showAlert("Не выбран статус!", "Выберите статус, который будет применен к профилю!");
-        } else {
-            if (systUserTable.getSelectionModel().isEmpty()) {
-                showAlert("Не выбран элемент таблицы!", "Выберите поле, в котором хотите изменить статус.");
-            } else {
-                Map<String, Object> userStatusMap = new HashMap<>();
-                userStatusMap.put("id", userId);
-                byte n = 0;
-                if (Objects.equals(choiceBoxStatus.getSelectionModel().getSelectedItem(), "Администратор")) {
-                    n = 1;
-                }
-                userStatusMap.put("status", n);
-                userStatusMap.put("login", ServiceSingleton.getInstance().getCurrentUser());
-                try {
-                    HttpResponse response = SimpleRequestManager.sendPutRequest("/update-user-status", gson.toJson(userStatusMap));
-                    int responseCode = response.getResponseCode();
-                    if (responseCode == 200) {
-                        showAlert("Успешно!", "Изменен статус пользователя с id " + userId + " на '" + choiceBoxStatus.getSelectionModel().getSelectedItem() + "'.");
+            showAlert("Не выбран статус!", "Выберите статус, который будет применен к профилю!", 2);
+            return;
+        }
 
-                        initData();
-                    } else if (responseCode == 403) {
-                        showAlert("Попытка изменения активного профиля!", "Остановлена попытка изменения статуса собственного профиля!");
-                    }
-                } catch (IOException e) {
-                    System.err.println(e.getMessage());
+        String choice_status;
+        if (Objects.equals(choiceBoxStatus.getSelectionModel().getSelectedItem(), "Администратор")) {
+            choice_status = "1";
+        } else {
+            choice_status = "0";
+        }
+        if (Objects.equals(current_status, choice_status)) {
+            showAlert("Попытка ненужного обновления статуса", "Статус выбранного пользователя уже определен как " + choiceBoxStatus.getSelectionModel().getSelectedItem(), 2);
+            return;
+        }
+
+        if (systUserTable.getSelectionModel().isEmpty()) {
+            showAlert("Не выбран элемент таблицы!", "Выберите поле, в котором хотите изменить статус.", 2);
+        } else {
+            Map<String, Object> userStatusMap = new HashMap<>();
+            userStatusMap.put("id", userId);
+            byte n = 0;
+            if (Objects.equals(choiceBoxStatus.getSelectionModel().getSelectedItem(), "Администратор")) {
+                n = 1;
+            }
+            userStatusMap.put("status", n);
+            userStatusMap.put("login", ServiceSingleton.getInstance().getCurrentUser());
+            try {
+                HttpResponse response = SimpleRequestManager.sendPutRequest("/update-user-status", gson.toJson(userStatusMap));
+                int responseCode = response.getResponseCode();
+                if (responseCode == 200) {
+                    showAlert("Успешно!", "Изменен статус пользователя с id " + userId + " на '" + choiceBoxStatus.getSelectionModel().getSelectedItem() + "'.", 1);
+
+                    initData();
+                } else if (responseCode == 403) {
+                    showAlert("Попытка изменения активного профиля!", "Остановлена попытка изменения статуса собственного профиля!", 2);
                 }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
         }
     }
 
-    private void showAlert(String title, String warning) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+
+    private void showAlert(String title, String warning, int code) {
+        Alert alert = null;
+        if (code == 1) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        } else if (code == 2) {
+            alert = new Alert(Alert.AlertType.WARNING);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(warning);

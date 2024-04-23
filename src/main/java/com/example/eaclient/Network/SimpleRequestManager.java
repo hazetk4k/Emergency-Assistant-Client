@@ -17,10 +17,6 @@ public class SimpleRequestManager {
         return RequestExecutor.executeRequest(urlString, "GET", null);
     }
 
-    public static HttpResponse sendDeleteRequest(String endpoint) throws IOException {
-        return sendDeleteRequest(endpoint, null);
-    }
-
     public static HttpResponse sendDeleteRequest(String endpoint, String queryParams) throws IOException {
         String urlString = BASE_URL + endpoint;
         if (queryParams != null && !queryParams.isEmpty()) {

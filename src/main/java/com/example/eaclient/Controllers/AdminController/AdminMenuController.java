@@ -2,6 +2,7 @@ package com.example.eaclient.Controllers.AdminController;
 
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Service.ServiceSingleton;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +29,8 @@ public class AdminMenuController implements Initializable {
     public Button btnBackToAuth;
     @FXML
     public Button btnOpenRels;
+    public Button btnOpenAuto;
+    public Button btnOpenServiceAutoRels;
     WindowManager manager = new WindowManager();
 
 
@@ -109,5 +112,11 @@ public class AdminMenuController implements Initializable {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void openAutoOptions(ActionEvent actionEvent) {
+    }
+
+    public void openServiceAutoRels(ActionEvent actionEvent) {
     }
 }

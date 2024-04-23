@@ -1,6 +1,5 @@
 package com.example.eaclient.Controllers.AdminController;
 
-import com.example.eaclient.Models.KindEm;
 import com.example.eaclient.Models.TypeEm;
 import com.example.eaclient.Network.HttpResponse;
 import com.example.eaclient.Network.SimpleRequestManager;
@@ -42,8 +41,13 @@ public class TypeViewController {
     public TextField chosenType;
     private final Gson gson = new Gson();
 
-    private void showAlert(String title, String warning) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String warning, int code) {
+        Alert alert = null;
+        if (code == 1) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        } else if (code == 2) {
+            alert = new Alert(Alert.AlertType.WARNING);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(warning);
@@ -108,7 +112,7 @@ public class TypeViewController {
 
     public void deleteType(ActionEvent actionEvent) {
         if (chosenType.getText() == null || Objects.equals(chosenType.getText(), "")) {
-            showAlert("Не выбрана запись!", "Выберите запись для удаления!");
+            showAlert("Не выбрана запись!", "Выберите запись для удаления!", 2);
         } else {
             String type_name = chosenType.getText();
             System.out.println(type_name);
@@ -117,14 +121,14 @@ public class TypeViewController {
                 HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-type", "type_name=" + encodedWord);
                 int code = response.getResponseCode();
                 if (code == 200) {
-                    showAlert("Успешно!", "Тип ЧС с именем " + type_name + " был удален.");
+                    showAlert("Успешно!", "Тип ЧС с именем " + type_name + " был удален.", 1);
                     initData();
                 } else if (code == 400) {
-                    showAlert("Не удалось получить имя вида ЧС", "Что-то пошло не так.");
+                    showAlert("Не удалось получить имя вида ЧС", "Что-то пошло не так.", 2);
                 } else if (code == 404) {
-                    showAlert("Не удалось найти вид ЧС", "Запись о типе " + type_name + " не найдена.");
+                    showAlert("Не удалось найти вид ЧС", "Запись о типе " + type_name + " не найдена.", 2);
                 } else if (code == 409) {
-                    showAlert("Не удалось провести удаление", "Данный тип используется в других записях.");
+                    showAlert("Не удалось провести удаление", "Данный тип используется в других записях.", 2);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -134,17 +138,17 @@ public class TypeViewController {
 
     public void addNewType(ActionEvent actionEvent) {
         if (kindChoiceBox.getSelectionModel().getSelectedItem() == null) {
-            showAlert("Не выбран вид ЧС!", "Выберите вид, к которому будет относится тип!");
+            showAlert("Не выбран вид ЧС!", "Выберите вид, к которому будет относится тип!", 2);
             return;
         }
 
         if (fieldTypeName.getText() == null || fieldTypeName.getText().isEmpty()) {
-            showAlert("Не введено название!", "Введите название типа");
+            showAlert("Не введено название!", "Введите название типа", 2);
             return;
         }
 
         if (recoms.getText() == null || recoms.getText().isEmpty()) {
-            showAlert("Не дана рекомендация!", "Введите рекомендацию для пользователя!");
+            showAlert("Не дана рекомендация!", "Введите рекомендацию для пользователя!", 2);
             return;
         }
 
@@ -155,15 +159,22 @@ public class TypeViewController {
         newTypeMap.put("kind_name", kind_name);
         newTypeMap.put("type_name", type_name);
         newTypeMap.put("recommendations", recommendations);
+
         try {
             HttpResponse httpResponse = SimpleRequestManager.sendPostRequest("/add-new-type", gson.toJson(newTypeMap));
+            int code = httpResponse.getResponseCode();
+            if (code == 200) {
+                fieldTypeName.clear();
+                recoms.clear();
+                showAlert("Успешно!", "Добавлен новый тип: " + type_name, 1);
+                initData();
+            } else if (code == 409) {
+                fieldTypeName.clear();
+                recoms.clear();
+                showAlert("Ошибка!", "Тип с именем: " + type_name + " уже существует", 1);
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        fieldTypeName.clear();
-        recoms.clear();
-
-        initData();
-
     }
 }

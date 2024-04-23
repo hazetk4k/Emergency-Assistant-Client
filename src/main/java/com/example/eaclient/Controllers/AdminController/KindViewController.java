@@ -39,9 +39,13 @@ public class KindViewController {
 
     private final Gson gson = new Gson();
 
-    //TODO: SHOW ALERT должны быть разными стилистически (типа успех и неудача)
-    private void showAlert(String title, String warning) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String warning, int code) {
+        Alert alert = null;
+        if (code == 1) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        } else if (code == 2) {
+            alert = new Alert(Alert.AlertType.WARNING);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(warning);
@@ -107,21 +111,21 @@ public class KindViewController {
 
     public void deleteThisKind(ActionEvent actionEvent) {
         if (chosenKind.getText() == null || Objects.equals(chosenKind.getText(), "")) {
-            showAlert("Не выбрана запись!", "Выберите запись для удаления!");
+            showAlert("Не выбрана запись!", "Выберите запись для удаления!", 2);
         } else {
             String kind_name = chosenKind.getText();
             try {
                 HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-kind", "kind_id=" + selectedId);
                 int code = response.getResponseCode();
                 if (code == 200) {
-                    showAlert("Успешно!", "Вид ЧС с именем " + kind_name + " был удален.");
+                    showAlert("Успешно!", "Вид ЧС с именем " + kind_name + " был удален.", 1);
                     initData();
                 } else if (code == 400) {
-                    showAlert("Не удалось получить имя вида ЧС", "Что-то пошло не так.");
+                    showAlert("Не удалось получить имя вида ЧС", "Что-то пошло не так.", 2);
                 } else if (code == 404) {
-                    showAlert("Не удалось найти вид ЧС", "Запись о виде " + kind_name + " не найдена.");
+                    showAlert("Не удалось найти вид ЧС", "Запись о виде " + kind_name + " не найдена.", 2);
                 } else if (code == 409) {
-                    showAlert("Не удалось провести удаление", "Данный вид используется в других записях.");
+                    showAlert("Не удалось провести удаление", "Данный вид используется в других записях.", 2);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -131,13 +135,13 @@ public class KindViewController {
 
     public void addNewKind(ActionEvent actionEvent) {
         if (charChoiceBox.getSelectionModel().getSelectedItem() == null) {
-            showAlert("Не выбран характер ЧС!", "Выберите характер ЧС, к которому будет относиться вид!");
+            showAlert("Не выбран характер ЧС!", "Выберите характер ЧС, к которому будет относиться вид!", 2);
             return;
         }
 
         String kind_name = newKindFiled.getText();
         if (kind_name == null || kind_name.isEmpty()) {
-            showAlert("Не введено название!", "Введите название вида!");
+            showAlert("Не введено название!", "Введите название вида!", 2);
             return;
         }
 
@@ -145,14 +149,22 @@ public class KindViewController {
         Map<String, Object> newKindMap = new HashMap<>();
         newKindMap.put("kind_name", kind_name);
         newKindMap.put("char_name", char_name);
+
         try {
             HttpResponse httpResponse = SimpleRequestManager.sendPostRequest("/add-new-kind", gson.toJson(newKindMap));
+            int code = httpResponse.getResponseCode();
+
+            if (code == 200) {
+                newKindFiled.clear();
+                showAlert("Успешно!", "Добавлен новый вид ЧС. Вид: " + kind_name + ", Характер:" + char_name, 1);
+                initData();
+            } else if (code == 409) {
+                newKindFiled.clear();
+                showAlert("Ошибка!", "Вид ЧС " + kind_name + " уже существует", 2);
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        newKindFiled.clear();
-        showAlert("Успешно!", "Добавлен новый вид ЧС. Вид: " + kind_name + ", Характер:" + char_name);
-        initData();
     }
 
 }

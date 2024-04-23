@@ -6,10 +6,7 @@ import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,22 +37,38 @@ public class AuthController {
             requestData.put("password", password);
             String requestBody = gson.toJson(requestData);
 
-            // Попытка отправить запрос
+            if (fieldPassword.getText() == null || Objects.equals(fieldPassword.getText(), "")) {
+                fieldPassword.clear();
+                fieldPassword.setStyle("-fx-prompt-text-fill: red");
+                fieldPassword.setPromptText("Введите пароль");
+                return;
+            }
+
+            if (fieldLogin.getText() == null || Objects.equals(fieldLogin.getText(), "")) {
+                fieldPassword.clear();
+                fieldPassword.setStyle("-fx-prompt-text-fill: red");
+                fieldPassword.setPromptText("Введите логин");
+                return;
+            }
+
             HttpResponse response = SimpleRequestManager.sendPostRequest("/system-sign-in", requestBody);
             int responseCode = response.getResponseCode();
-            // Проверяем код состояния ответа
+
             if (responseCode == 401) {
                 fieldPassword.clear();
                 fieldPassword.setStyle("-fx-prompt-text-fill: red");
                 fieldPassword.setPromptText("Неверный пароль");
+
             } else if (responseCode == 404) {
                 fieldLogin.clear();
                 fieldLogin.setStyle("-fx-prompt-text-fill: red");
                 fieldLogin.setPromptText("Пользователь не найден");
                 fieldPassword.clear();
+
             } else if (responseCode == -1) {
                 labelProgress.setVisible(true);
                 labelProgress.setText("Сервер не принимает запросы или не включен");
+
             } else if (responseCode == 200) {
                 //получаем статус
                 String responseBody = response.getResponseBody();

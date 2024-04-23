@@ -4,9 +4,13 @@ import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Network.HttpResponse;
 import com.example.eaclient.Network.SimpleRequestManager;
+import com.example.eaclient.Network.WebSocketClientEndpoint;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.WebSocketContainer;
 import javafx.animation.TranslateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,18 +18,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -53,6 +63,8 @@ public class AllReportsController implements Initializable {
     public Button openSaveDirectoryButton;
     @FXML
     public Button toAuthWindowButton;
+
+    Thread webSocketThread;
 
     WindowManager manager = new WindowManager();
 
@@ -91,21 +103,25 @@ public class AllReportsController implements Initializable {
         stage.close();
     }
 
-    //TODO: Добавить замену timestamp на "словянский тип"
     ObservableList<AllReportsTable> initialData() {
         ObservableList<AllReportsTable> reportsTable = FXCollections.observableArrayList();
         try {
             HttpResponse httpResponse = SimpleRequestManager.sendGetRequest("/get-all-reports");
-            System.out.println("Запрос отправлен");
             int response_code = httpResponse.getResponseCode();
             if (response_code == 200) {
                 String responseBody = httpResponse.getResponseBody();
-                Type typeOfReports = new TypeToken<ArrayList<AllReportsTable>>() {
-                }.getType();
-                List<AllReportsTable> tempReportList = gson.fromJson(responseBody, typeOfReports);
+                if (Objects.equals(responseBody, "[]")) {
+                    Label label_placeholder = new Label("Заявления отсутствуют");
+                    label_placeholder.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
+                    tableView.setPlaceholder(label_placeholder);
+                } else {
+                    Type typeOfReports = new TypeToken<ArrayList<AllReportsTable>>() {
+                    }.getType();
+                    List<AllReportsTable> tempReportList = gson.fromJson(responseBody, typeOfReports);
 
-                reportsTable.addAll(tempReportList);
-                System.out.println(tempReportList);
+                    reportsTable.addAll(tempReportList);
+                    System.out.println(tempReportList);
+                }
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -124,5 +140,17 @@ public class AllReportsController implements Initializable {
         wasSeen.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Boolean>("wasSeen"));
 
         tableView.setItems(initialData());
+
+        webSocketThread = new Thread(() -> {
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            WebSocketClientEndpoint client = new WebSocketClientEndpoint();
+            try {
+                container.connectToServer(client, new URI("ws://localhost:8085/"));
+            } catch (DeploymentException | IOException | URISyntaxException e) {
+                System.out.println(e.getMessage());
+            }
+        });
+
+        webSocketThread.start();
     }
 }
