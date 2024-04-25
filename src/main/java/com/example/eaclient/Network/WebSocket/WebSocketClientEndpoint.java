@@ -1,7 +1,13 @@
-package com.example.eaclient.Network;
+package com.example.eaclient.Network.WebSocket;
 
 
-import jakarta.websocket.*;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
 
 @ClientEndpoint
 public class WebSocketClientEndpoint {

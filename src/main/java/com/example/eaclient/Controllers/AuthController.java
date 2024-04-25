@@ -1,18 +1,20 @@
 package com.example.eaclient.Controllers;
 
-import com.example.eaclient.Network.HttpResponse;
-import com.example.eaclient.Network.SimpleRequestManager;
+import com.example.eaclient.Network.HttpRequests.HttpResponse;
+import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class AuthController {
     @FXML

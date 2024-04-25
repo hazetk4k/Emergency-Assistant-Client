@@ -1,13 +1,9 @@
 package com.example.eaclient.Controllers.AdminController;
 
-import com.example.eaclient.Network.HttpResponse;
-import com.example.eaclient.Network.SimpleRequestManager;
+import com.example.eaclient.Network.HttpRequests.HttpResponse;
+import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
@@ -16,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 public class RelationsViewController {
     @FXML

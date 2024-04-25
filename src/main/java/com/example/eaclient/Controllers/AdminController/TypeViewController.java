@@ -1,22 +1,31 @@
 package com.example.eaclient.Controllers.AdminController;
 
 import com.example.eaclient.Models.TypeEm;
-import com.example.eaclient.Network.HttpResponse;
-import com.example.eaclient.Network.SimpleRequestManager;
+import com.example.eaclient.Network.HttpRequests.HttpResponse;
+import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TypeViewController {
     @FXML

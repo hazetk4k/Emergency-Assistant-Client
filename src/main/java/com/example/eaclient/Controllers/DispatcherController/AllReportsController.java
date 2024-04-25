@@ -2,15 +2,19 @@ package com.example.eaclient.Controllers.DispatcherController;
 
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.AllReportsTable;
-import com.example.eaclient.Network.HttpResponse;
-import com.example.eaclient.Network.SimpleRequestManager;
-import com.example.eaclient.Network.WebSocketClientEndpoint;
+import com.example.eaclient.Network.HttpRequests.HttpResponse;
+import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
+import com.example.eaclient.Network.WebSocket.WebSocketClient;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import jakarta.websocket.ContainerProvider;
-import jakarta.websocket.DeploymentException;
-import jakarta.websocket.WebSocketContainer;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,16 +31,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 
 public class AllReportsController implements Initializable {
@@ -97,10 +91,12 @@ public class AllReportsController implements Initializable {
 
     // Сделано
     public void toAuthWindow() throws IOException {
+        //TODO: Убрать текущего пользователя
         manager.openFxmlScene("/fxml/AuthWindow.fxml", "Авторизация");
         ServiceSingleton.getInstance().setIfClosed(true);
         Stage stage = (Stage) toAuthWindowButton.getScene().getWindow();
         stage.close();
+        WebSocketClient.getInstance().disconnect();
     }
 
     ObservableList<AllReportsTable> initialData() {
@@ -140,17 +136,10 @@ public class AllReportsController implements Initializable {
         wasSeen.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Boolean>("wasSeen"));
 
         tableView.setItems(initialData());
-
-        webSocketThread = new Thread(() -> {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            WebSocketClientEndpoint client = new WebSocketClientEndpoint();
-            try {
-                container.connectToServer(client, new URI("ws://localhost:8085/"));
-            } catch (DeploymentException | IOException | URISyntaxException e) {
-                System.out.println(e.getMessage());
-            }
-        });
-
-        webSocketThread.start();
+        try{
+            WebSocketClient.getInstance().connect();
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
     }
 }

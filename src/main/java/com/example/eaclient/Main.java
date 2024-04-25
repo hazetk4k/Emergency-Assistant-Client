@@ -1,13 +1,10 @@
 package com.example.eaclient;
 
+import java.io.IOException;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
-import java.io.IOException;
 
 public class Main extends Application {
     @Override
@@ -16,12 +13,9 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load());
 
 
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                System.out.println("Работа завершена");
-                System.exit(0);
-            }
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Работа завершена");
+            System.exit(0);
         });
 
         stage.setTitle("Авторизация");

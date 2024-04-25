@@ -1,4 +1,4 @@
-package com.example.eaclient.Network;
+package com.example.eaclient.Network.HttpRequests;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import java.util.concurrent.ExecutorService;
 
 public class RequestExecutor {
     //TODO:Завернуть все в поток? ExecutorService

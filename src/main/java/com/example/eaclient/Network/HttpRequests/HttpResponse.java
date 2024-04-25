@@ -1,4 +1,4 @@
-package com.example.eaclient.Network;
+package com.example.eaclient.Network.HttpRequests;
 
 public class HttpResponse {
     private final int responseCode;
