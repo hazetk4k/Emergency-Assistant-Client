@@ -1,10 +1,14 @@
 package com.example.eaclient.Service;
 
+import com.example.eaclient.Controllers.DispatcherController.AllReportsController;
+import com.example.eaclient.Models.AllReportsTable;
+
 public class ServiceSingleton {
     static ServiceSingleton INSTANCE;
     private Boolean ifClosed = true;
-
     private String CurrentUser;
+
+    private AllReportsController allReportsController;
 
     public static ServiceSingleton getInstance() {
         if (INSTANCE == null) {
@@ -28,4 +32,16 @@ public class ServiceSingleton {
     public void setCurrentUser(String currentUser) {
         CurrentUser = currentUser;
     }
+
+    public void setAllReportsController(AllReportsController allReportsController) {
+        this.allReportsController = allReportsController;
+    }
+
+    public void deliverDataToController(AllReportsTable newData) {
+        if (allReportsController != null) {
+            allReportsController.updateTableWithData(newData);
+        }
+    }
+
+
 }

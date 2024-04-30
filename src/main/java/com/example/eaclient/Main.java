@@ -18,6 +18,7 @@ public class Main extends Application {
             System.exit(0);
         });
 
+        stage.setResizable(false);
         stage.setTitle("Авторизация");
         stage.setScene(scene);
         stage.show();

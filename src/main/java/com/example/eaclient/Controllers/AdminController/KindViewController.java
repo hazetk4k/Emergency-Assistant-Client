@@ -91,7 +91,7 @@ public class KindViewController {
                 String body = httpResponse.getResponseBody();
                 listOfChars = gson.fromJson(body, List.class);
             } else {
-                System.out.println("Ошибка загрузки");
+                System.err.println("Ошибка загрузки!");
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());

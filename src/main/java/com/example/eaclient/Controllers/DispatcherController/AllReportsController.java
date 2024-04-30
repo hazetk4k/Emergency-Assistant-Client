@@ -16,17 +16,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -64,6 +70,8 @@ public class AllReportsController implements Initializable {
 
     private final Gson gson = new Gson();
 
+    //TODO: Доработать данные в и интерфейсе
+
     public void toggleMenu() {
         TranslateTransition menuAnimation = new TranslateTransition(Duration.millis(300), burgerMenu);
         if (!burgerMenu.isVisible()) {
@@ -79,24 +87,27 @@ public class AllReportsController implements Initializable {
         }
     }
 
-    // Доделать
     public void toReportsList(ActionEvent actionEvent) {
 
     }
 
-    // Доделать
     public void openSaveDirectory(ActionEvent actionEvent) {
 
     }
 
-    // Сделано
+    public void updateTableWithData(AllReportsTable newData) {
+        Platform.runLater(() -> {
+            tableView.getItems().add(newData);
+        });
+    }
+
     public void toAuthWindow() throws IOException {
-        //TODO: Убрать текущего пользователя
         manager.openFxmlScene("/fxml/AuthWindow.fxml", "Авторизация");
         ServiceSingleton.getInstance().setIfClosed(true);
         Stage stage = (Stage) toAuthWindowButton.getScene().getWindow();
         stage.close();
         WebSocketClient.getInstance().disconnect();
+        ServiceSingleton.getInstance().setCurrentUser(null);
     }
 
     ObservableList<AllReportsTable> initialData() {
@@ -128,6 +139,8 @@ public class AllReportsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ServiceSingleton.getInstance().setAllReportsController(this);
+
         id.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Integer>("id"));
         type.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("type"));
         timestamp.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("timestamp"));
@@ -136,10 +149,49 @@ public class AllReportsController implements Initializable {
         wasSeen.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Boolean>("wasSeen"));
 
         tableView.setItems(initialData());
-        try{
+
+        try {
             WebSocketClient.getInstance().connect();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
+        }
+
+        wasSeen.setCellFactory(column -> new TableCell<AllReportsTable, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item ? "Действия предприняты" : "Новое");
+                    setTextFill(item ? Color.GREEN : Color.RED);
+                }
+            }
+        });
+
+        tableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
+                AllReportsTable rowData = tableView.getSelectionModel().getSelectedItem();
+                openReportWindow(rowData);
+            }
+        });
+    }
+
+    private void openReportWindow(AllReportsTable rowData) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DispatcherWindows/ReportWindow.fxml"));
+            Parent root = loader.load();
+
+            ReportController controller = loader.getController();
+            controller.initData(rowData);
+
+            Stage stage = new Stage();
+            stage.setTitle("Заявление №" + rowData.getId());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
