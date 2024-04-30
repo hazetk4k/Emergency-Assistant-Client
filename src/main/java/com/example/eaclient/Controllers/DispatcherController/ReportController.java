@@ -7,11 +7,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -21,7 +23,7 @@ import javafx.scene.layout.VBox;
 
 public class ReportController {
     @FXML
-    public VBox firstReportWindow;
+    public VBox firstWindowSupport;
     @FXML
     public TextField typeNameField;
     @FXML
@@ -35,23 +37,28 @@ public class ReportController {
     @FXML
     public TextField applicantStatusField;
     @FXML
-    public Button applicantProfileStatus;
+    public TextField applicantProfileStatus;
     @FXML
     public TextArea additionalInfoArea;
     @FXML
     public Button buttonStartReacting;
     @FXML
-    public TextArea recommendedServicesArea;
+    public ListView<String> recommendedServicesList;
     @FXML
     public TextArea chosenServicesArea;
-    @FXML
-    public ListView<String> servicesList;
     @FXML
     public Button buttonCallingServices;
     @FXML
     public Button buttonNextWindow;
     @FXML
-    public VBox secondReportWindow;
+    public Button btnCleanServices;
+    @FXML
+    public ListView<CheckBox> allServicesList;
+    @FXML
+    public Button buttonOpenApplicantProfile;
+    @FXML
+    public TextField applicantNameAndPhone;
+    @FXML
     private AllReportsTable reportTableData;
 
     private final Gson gson = new Gson();
@@ -91,10 +98,15 @@ public class ReportController {
                 List<String> chars = emergencyData.get("chars");
                 List<String> kinds = emergencyData.get("kinds");
                 List<String> services = emergencyData.get("services");
+                List<CheckBox> checkBoxList = new ArrayList<>();
+                for (String service : services) {
+                    CheckBox checkBox = new CheckBox(service);
+                    checkBoxList.add(checkBox);
+                }
 
                 charChoiceBox.getItems().addAll(chars);
                 kindComboBox.getItems().addAll(kinds);
-                servicesList.getItems().addAll(services);
+                allServicesList.getItems().addAll(checkBoxList);
             } else {
                 System.err.println("Ошибка загрузки!");
             }
@@ -108,8 +120,7 @@ public class ReportController {
     }
 
     public void openNextWindow(ActionEvent actionEvent) {
-        firstReportWindow.setVisible(false);
-        secondReportWindow.setVisible(true);
+        firstWindowSupport.setVisible(false);
     }
 
     public void callServices(ActionEvent actionEvent) {
@@ -118,5 +129,8 @@ public class ReportController {
 
     public void openApplicantProfile(ActionEvent actionEvent) {
         //TODO:Доделать (интерфейс + функционал)
+    }
+
+    public void cleanUpServices(ActionEvent actionEvent) {
     }
 }
