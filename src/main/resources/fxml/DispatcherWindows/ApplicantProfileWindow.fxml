@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.eaclient.Controllers.DispatcherController.ApplicantProfileController">
+   <VBox alignment="TOP_CENTER" style="-fx-background-color: #aed2ca;">
+      <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+             maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" text="Данные заявителя"
+             textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
+         <font>
+            <Font name="Arial Bold" size="18.0"/>
+         </font>
+         <VBox.margin>
+            <Insets/>
+         </VBox.margin>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+         </padding>
+      </Label>
+      <VBox VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+         </padding>
+         <Label maxWidth="1.7976931348623157E308" text="ФИО:" textFill="#1e2f56">
+            <font>
+               <Font name="System Bold" size="14.0"/>
+            </font>
+            <VBox.margin>
+               <Insets top="5.0"/>
+            </VBox.margin>
+         </Label>
+         <TextField fx:id="fieldFIO">
+            <font>
+               <Font name="Arial" size="14.0"/>
+            </font>
+         </TextField>
+         <Label maxWidth="1.7976931348623157E308" text="Телефонный номер:" textFill="#1e2f56">
+            <font>
+               <Font name="System Bold" size="14.0"/>
+            </font>
+            <VBox.margin>
+               <Insets top="5.0"/>
+            </VBox.margin>
+         </Label>
+         <TextField fx:id="fieldPhone">
+            <font>
+               <Font name="Arial" size="14.0"/>
+            </font>
+         </TextField>
+         <Label maxWidth="1.7976931348623157E308" text="Электронная почта" textFill="#1e2f56">
+            <font>
+               <Font name="System Bold" size="14.0"/>
+            </font>
+            <VBox.margin>
+               <Insets top="5.0"/>
+            </VBox.margin>
+         </Label>
+         <TextField fx:id="fieldEmail">
+            <font>
+               <Font name="Arial" size="14.0"/>
+            </font>
+         </TextField>
+         <Label maxWidth="1.7976931348623157E308" text="Домашний адрес:" textFill="#1e2f56">
+            <font>
+               <Font name="System Bold" size="14.0"/>
+            </font>
+            <VBox.margin>
+               <Insets top="5.0"/>
+            </VBox.margin>
+         </Label>
+         <TextField fx:id="fieldHomeAddress">
+            <font>
+               <Font name="Arial" size="14.0"/>
+            </font>
+         </TextField>
+         <Label maxWidth="1.7976931348623157E308" text="Рабочий адрес:" textFill="#1e2f56">
+            <font>
+               <Font name="System Bold" size="14.0"/>
+            </font>
+            <VBox.margin>
+               <Insets top="5.0"/>
+            </VBox.margin>
+         </Label>
+         <TextField fx:id="fieldWorkAddress">
+            <font>
+               <Font name="Arial" size="14.0"/>
+            </font>
+         </TextField>
+      </VBox>
+   </VBox>
+</AnchorPane>

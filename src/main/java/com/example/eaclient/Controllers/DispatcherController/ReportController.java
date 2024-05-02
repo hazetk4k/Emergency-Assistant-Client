@@ -1,5 +1,6 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
+import com.example.eaclient.Controllers.AdminController.UserViewController;
 import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Models.Applicant;
 import com.example.eaclient.Models.DataReportApplicant;
@@ -15,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -23,6 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class ReportController {
     @FXML
@@ -99,12 +104,32 @@ public class ReportController {
                         System.err.println("Ошибка загрузки!");
                     }
                 } catch (IOException e) {
-                    System.err.println(e.getMessage());
+                    System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
                 }
             }
         });
 
-
+        kindComboBox.setOnAction(event -> {
+            recommendedServicesList.getItems().clear();
+            List<String> listOfServices;
+            String selectedKind = kindComboBox.getValue();
+            if (selectedKind != null) {
+                try {
+                    HttpResponse response = SimpleRequestManager.sendGetRequest("/get-services-by-kind", "kind=" + selectedKind);
+                    int code = response.getResponseCode();
+                    if (code == 200) {
+                        String body = response.getResponseBody();
+                        listOfServices = gson.fromJson(body, List.class);
+                        assert listOfServices!=null;
+                        recommendedServicesList.getItems().addAll(listOfServices);
+                    } else {
+                        System.err.println("Ошибка загрузки!");
+                    }
+                } catch (IOException e) {
+                    System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
+                }
+            }
+        });
     }
 
     public void loadReportApplicantData() {
@@ -117,10 +142,17 @@ public class ReportController {
                 report = data.getReport();
                 applicant = data.getApplicant();
 
-                applicantNameAndPhone.setText(makeFIOAndPhoneString(applicant.getName(),
+                String fio = ApplicantProfileController.makeFIO(
+                        applicant.getName(),
                         applicant.getSurname(),
-                        applicant.getPatronymic(),
-                        applicant.getPhone_number()));
+                        applicant.getPatronymic()
+                );
+
+                applicantNameAndPhone.setText(makeFIOAndPhoneString(
+                        fio,
+                        applicant.getPhone_number())
+                );
+
                 placeNameField.setText(report.getPlace());
                 dateTimeField.setText(report.getTimestamp());
                 typeNameField.setText(report.getType());
@@ -148,16 +180,9 @@ public class ReportController {
         }
     }
 
-    public String makeFIOAndPhoneString(String name, String surname, String patronymic, String phone) {
+    public String makeFIOAndPhoneString(String fio, String phone) {
         StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append(surname.substring(0, 1).toUpperCase()).append(surname.substring(1).toLowerCase()).append(" ")
-                .append(name.substring(0, 1).toUpperCase()).append(name.substring(1).toLowerCase());
-
-        if (patronymic != null) {
-            stringBuilder.append(" ").append(patronymic.substring(0, 1).toUpperCase()).append(patronymic.substring(1).toLowerCase());
-        }
-
+        stringBuilder.append(fio);
         stringBuilder.append(". Телефон: +375").append(phone);
         return stringBuilder.toString();
     }
@@ -203,7 +228,19 @@ public class ReportController {
     }
 
     public void openApplicantProfile(ActionEvent actionEvent) {
-        //TODO:Доделать (интерфейс + функционал)
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DispatcherWindows/ApplicantProfileWindow.fxml"));
+            Parent root = loader.load();
+
+            ApplicantProfileController controller = loader.getController();
+            controller.initData(applicant);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void cleanUpServices(ActionEvent actionEvent) {
@@ -227,7 +264,7 @@ public class ReportController {
 
     public void confirmChosenServices(ActionEvent actionEvent) {
         //TODO:Доделать
-        if(chosenServicesArea.getText().isEmpty()){
+        if (chosenServicesArea.getText().isEmpty()) {
             chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
             chosenServicesArea.setPromptText("Выберите службы реагирования!");
         } else {
