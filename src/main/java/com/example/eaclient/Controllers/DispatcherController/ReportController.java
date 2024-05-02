@@ -13,7 +13,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -49,7 +48,7 @@ public class ReportController {
     @FXML
     public TextArea chosenServicesArea; // Сделано
     @FXML
-    public Button buttonCallingServices;
+    public Button buttonConfirmServices;
     @FXML
     public Button buttonNextWindow;
     @FXML
@@ -62,6 +61,8 @@ public class ReportController {
     public TextField applicantNameAndPhone; //Сделано
     @FXML
     public TextField casualtiesAmount;
+    public VBox vboxConfirmStartReaction;
+    public VBox vboxConfirmChosenServices;
     private AllReportsTable reportTableData; //Сделано
 
     private Report report;
@@ -73,8 +74,37 @@ public class ReportController {
 
     public void initData(AllReportsTable rowData) {
         this.reportTableData = rowData;
+
+        vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+
         loadReportApplicantData();
         loadEmergencyData();
+
+        charChoiceBox.setOnAction(event -> {
+            kindComboBox.getItems().clear();
+            List<String> listOfKinds;
+            String selectedValue = charChoiceBox.getValue();
+            if (selectedValue != null) {
+                try {
+                    HttpResponse response = SimpleRequestManager.sendGetRequest("/get-kinds-of-char", "char=" + selectedValue);
+                    int code = response.getResponseCode();
+                    if (code == 200) {
+                        String body = response.getResponseBody();
+                        listOfKinds = gson.fromJson(body, List.class);
+                        assert listOfKinds != null;
+                        kindComboBox.getItems().addAll(listOfKinds);
+                        kindComboBox.setDisable(false);
+                    } else {
+                        System.err.println("Ошибка загрузки!");
+                    }
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        });
+
+
     }
 
     public void loadReportApplicantData() {
@@ -106,7 +136,7 @@ public class ReportController {
                 additionalInfoArea.setText(report.getAdditional_info());
                 if (report.getAre_there_any_casualties()) {
                     casualtiesAmount.setText(report.getCasualties_amount());
-                } else{
+                } else {
                     casualtiesAmount.setText("Отсутствуют");
                 }
 
@@ -172,21 +202,6 @@ public class ReportController {
         }
     }
 
-    public void startReacting(ActionEvent actionEvent) {
-        //TODO:Доделать
-    }
-
-    public void callServices(ActionEvent actionEvent) {
-        //TODO:Доделать
-    }
-
-    public void openNextWindow(ActionEvent actionEvent) {
-        firstWindowSupport.setVisible(false);
-    }
-
-    public void finishReacting(ActionEvent actionEvent) {
-    }
-
     public void openApplicantProfile(ActionEvent actionEvent) {
         //TODO:Доделать (интерфейс + функционал)
     }
@@ -194,5 +209,32 @@ public class ReportController {
     public void cleanUpServices(ActionEvent actionEvent) {
         allServicesList.getItems().forEach(checkBox -> checkBox.setSelected(false));
         chosenServicesArea.clear();
+    }
+
+    public void confirmStartReacting(ActionEvent actionEvent) {
+        //TODO:Доделать
+        vboxConfirmStartReaction.setStyle("");
+        buttonStartReacting.setStyle("");
+        vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonStartReacting.setDisable(true);
+        buttonConfirmServices.setDisable(false);
+    }
+
+    public void moveToNextWindow(ActionEvent actionEvent) {
+        //TODO: Доделать
+    }
+
+    public void confirmChosenServices(ActionEvent actionEvent) {
+        //TODO:Доделать
+        if(chosenServicesArea.getText().isEmpty()){
+            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
+            chosenServicesArea.setPromptText("Выберите службы реагирования!");
+        } else {
+            buttonConfirmServices.setStyle("");
+            buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+            buttonConfirmServices.setDisable(true);
+            buttonNextWindow.setDisable(false);
+        }
     }
 }

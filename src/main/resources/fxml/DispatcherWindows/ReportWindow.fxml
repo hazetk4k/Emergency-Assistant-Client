@@ -26,7 +26,7 @@
       </Label>
       <Separator />
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <VBox alignment="TOP_CENTER" prefHeight="634.0" prefWidth="407.0" HBox.hgrow="ALWAYS">
+         <VBox fx:id="vboxConfirmStartReaction" alignment="TOP_CENTER" prefHeight="634.0" prefWidth="407.0" HBox.hgrow="ALWAYS">
             <Label styleClass="bold-white-label" text="1. Определение характеристик ЧС" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="Arial Bold" size="14.0" />
@@ -280,7 +280,7 @@
                   </VBox>
                </HBox>
             </VBox>
-            <Button fx:id="buttonStartReacting" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Подтвердить получение данных о ЧС" VBox.vgrow="ALWAYS">
+            <Button fx:id="buttonStartReacting" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmStartReacting" text="Подтвердить получение данных о ЧС" VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -294,7 +294,7 @@
          </VBox>
          <Separator orientation="VERTICAL" prefHeight="200.0" />
          <Separator orientation="VERTICAL" prefHeight="200.0" />
-         <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+         <VBox fx:id="vboxConfirmChosenServices" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
             <Label styleClass="bold-white-label" text="2. Выбор служб реагирования на ЧС">
                <font>
                   <Font name="Arial Bold" size="14.0" />
@@ -384,7 +384,7 @@
                </font>
             </TextArea>
             <HBox>
-               <Button fx:id="buttonCallingServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Подтвердить вызов служб реагирования" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonConfirmServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmChosenServices" text="Подтвердить вызов служб реагирования" HBox.hgrow="ALWAYS">
                   <font>
                      <Font name="Arial" size="14.0" />
                   </font>
@@ -395,7 +395,7 @@
                      <Insets bottom="5.0" left="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
-               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Перейти к следующим действиям" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveToNextWindow" text="Перейти к следующим действиям" HBox.hgrow="ALWAYS">
                   <font>
                      <Font name="Arial" size="14.0" />
                   </font>

@@ -33,6 +33,7 @@ public class RequestExecutor {
 
         int responseCode;
         responseCode = conn.getResponseCode();
+        System.out.println("============================================================================");
         if (responseCode != 200) {
             System.out.println(responseCode);
             return new HttpResponse(conn.getResponseCode(), "");

@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,10 +178,9 @@ public class RelationsViewController {
             showAlert("Не выбрана служба!", "Выберите службу, связь с которой хотите убрать!", 2);
             return;
         }
-        String kind_name = URLEncoder.encode(textKindOfService.getText(), StandardCharsets.UTF_8);
-        String service_name = URLEncoder.encode(chosenService.getText(), StandardCharsets.UTF_8);
+
         try {
-            HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-service-relation", "kind_name=" + kind_name + "&" + "service_name=" + service_name);
+            HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-service-relation", "kind_name=" + textKindOfService.getText() + "&" + "service_name=" + chosenService.getText());
             int code = response.getResponseCode();
             if (code == 200) {
                 showAlert("Успешно!", "Связь вида " + textKindOfService.getText() + " и службы " + chosenService.getText() + " была удалена.", 1);
@@ -191,7 +188,7 @@ public class RelationsViewController {
             } else if (code == 400) {
                 showAlert("Не удалось провести удаление", "Что-то пошло не так.", 2);
             } else if (code == 404) {
-                showAlert("Не удалось найти указанные данные", "Записи о связях " + kind_name + " не найдены.", 2);
+                showAlert("Не удалось найти указанные данные", "Записи о связях " + textKindOfService.getText() + " не найдены.", 2);
             } else if (code == 409) {
                 showAlert("Не удалось провести удаление", "Данная связь используется в других записях.", 2);
             }
@@ -205,9 +202,9 @@ public class RelationsViewController {
             showAlert("Не выбран вид ЧС!", "Выберите вид ЧС, чтобы удалить все ", 2);
             return;
         }
-        String kind_name = URLEncoder.encode(chosenKind.getText(), StandardCharsets.UTF_8);
+    //    String kind_name = URLEncoder.encode(chosenKind.getText(), StandardCharsets.UTF_8);
         try {
-            HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-all-kind-relations", "kind_name=" + kind_name);
+            HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-all-kind-relations", "kind_name=" + chosenKind.getText());
             int code = response.getResponseCode();
             if (code == 200) {
                 showAlert("Успешно!", "Связи вида ЧС " + chosenKind.getText() + " была удалена.", 1);
@@ -215,7 +212,7 @@ public class RelationsViewController {
             } else if (code == 400) {
                 showAlert("Не удалось провести удаление", "Что-то пошло не так.", 2);
             } else if (code == 404) {
-                showAlert("Не удалось найти указанные данные", "Записи о связях " + kind_name + " не найдены.", 2);
+                showAlert("Не удалось найти указанные данные", "Записи о связях " + chosenKind.getText() + " не найдены.", 2);
             } else if (code == 409) {
                 showAlert("Не удалось провести удаление", "Данная связь используется в других записях.", 2);
             }

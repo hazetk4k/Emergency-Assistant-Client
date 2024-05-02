@@ -3,7 +3,7 @@ package com.example.eaclient.Models;
 public class Applicant {
     public String name;
     public String surname;
-    public String patronymic = null;
+    public String patronymic;
     public String home_address;
     public String work_address;
     public String email;
