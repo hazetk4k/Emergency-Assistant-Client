@@ -70,7 +70,7 @@ public class WebSocketClient {
                 System.out.println("Error closing session: " + e.getMessage());
             }
         }
-        executor.shutdownNow();
+        if(executor != null) executor.shutdownNow();
         stopPingTimer();
     }
 }

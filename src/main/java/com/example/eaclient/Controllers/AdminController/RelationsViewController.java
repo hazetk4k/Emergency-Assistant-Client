@@ -12,11 +12,13 @@ import java.util.Map;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+
+
+import static com.example.eaclient.Controllers.WindowManager.showAlert;
 
 public class RelationsViewController {
     @FXML
@@ -36,18 +38,18 @@ public class RelationsViewController {
 
     private final Gson gson = new Gson();
 
-    private void showAlert(String title, String warning, int code) {
-        Alert alert = null;
-        if (code == 1){
-            alert = new Alert(Alert.AlertType.INFORMATION);
-        } else if(code == 2){
-            alert = new Alert(Alert.AlertType.WARNING);
-        }
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(warning);
-        alert.showAndWait();
-    }
+//    private void showAlert(String title, String warning, int code) {
+//        Alert alert = null;
+//        if (code == 1){
+//            alert = new Alert(Alert.AlertType.INFORMATION);
+//        } else if(code == 2){
+//            alert = new Alert(Alert.AlertType.WARNING);
+//        }
+//        alert.setTitle(title);
+//        alert.setHeaderText(null);
+//        alert.setContentText(warning);
+//        alert.showAndWait();
+//    }
 
     public void initData() {
         choiceBoxServices.getItems().clear();

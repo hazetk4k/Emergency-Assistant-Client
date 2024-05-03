@@ -1,6 +1,5 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
-import com.example.eaclient.Controllers.AdminController.UserViewController;
 import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Models.Applicant;
 import com.example.eaclient.Models.DataReportApplicant;
