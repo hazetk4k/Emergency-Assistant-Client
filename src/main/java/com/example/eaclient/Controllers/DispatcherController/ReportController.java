@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,6 +87,7 @@ public class ReportController {
 
     private final Gson gson = new Gson();
 
+    // Загрузка начальных данных
     public void initData(AllReportsTable rowData) {
         this.reportTableData = rowData;
 
@@ -115,7 +117,6 @@ public class ReportController {
                 }
             }
         });
-
         kindComboBox.setOnAction(event -> {
             String selectedKind = kindComboBox.getValue();
             if (selectedKind != null) {
@@ -137,6 +138,7 @@ public class ReportController {
                 kindComboBox.setValue(dispChoice.getName_kind());
                 //TODO:Сделать проверку на кастомный вид
                 loadRecommendedServices(dispChoice.getName_kind());
+
                 charChoiceBox.setDisable(true);
                 kindComboBox.setDisable(true);
                 buttonStartReacting.setDisable(true);
@@ -146,8 +148,22 @@ public class ReportController {
                     buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
                     buttonConfirmServices.setDisable(false);
                 } else {
+                    //TODO:ЗАСАВИТЬ РАБОТАТЬ!
+                    String[] services = dispChoice.getServices().split("\n");
+
+                    for (CheckBox checkBox : allServicesList.getItems()) {
+                        String checkBoxText = checkBox.getText().trim();
+                        for (String service : services) {
+                            if (service.trim().equals(checkBoxText)) {
+                                checkBox.setSelected(true);
+                                break;
+                            }
+                        }
+                    }
                     buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
                     //TODO: Добавить обработку выбора чекбоксов
+//                    allServicesList.setDisable(true);
+                    buttonNextWindow.setDisable(false);
                     chosenServicesArea.setText(dispChoice.getServices());
                 }
             } else if (code == 404) {
@@ -162,7 +178,7 @@ public class ReportController {
         }
     }
 
-    public void loadReportApplicantData() {
+    public void loadReportApplicantData() { //загружаются заявление и данные о пользователе
         try {
             HttpResponse response = SimpleRequestManager.sendGetRequest("/get-report-applicant-data", "report_id=" + reportTableData.getId());
             int code = response.getResponseCode();
@@ -211,14 +227,7 @@ public class ReportController {
         }
     }
 
-    public String makeFIOAndPhoneString(String fio, String phone) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(fio);
-        stringBuilder.append(". Телефон: +375").append(phone);
-        return stringBuilder.toString();
-    }
-
-    public void loadEmergencyData() {
+    public void loadEmergencyData() { //загружаются характеры и службы
         try {
             HttpResponse response = SimpleRequestManager.sendGetRequest("/set-up-emergency-data");
             int code = response.getResponseCode();
@@ -258,6 +267,14 @@ public class ReportController {
         }
     }
 
+    // Дополнительные методы
+    public String makeFIOAndPhoneString(String fio, String phone) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(fio);
+        stringBuilder.append(". Телефон: +375").append(phone);
+        return stringBuilder.toString();
+    }
+
     private void loadRecommendedServices(String kind) {
         recommendedServicesList.getItems().clear();
         List<String> listOfServices;
@@ -278,6 +295,7 @@ public class ReportController {
         }
     }
 
+    // Кнопки взаимодействия
     public void openApplicantProfile(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DispatcherWindows/ApplicantProfileWindow.fxml"));
@@ -297,6 +315,39 @@ public class ReportController {
     public void cleanUpServices(ActionEvent actionEvent) {
         allServicesList.getItems().forEach(checkBox -> checkBox.setSelected(false));
         chosenServicesArea.clear();
+    }
+
+    // Кнопки выбора переходов
+    public void moveToNextWindow(ActionEvent actionEvent) {
+        firstWindowSupport.setVisible(false);
+        secondWindowSupport.setVisible(true);
+    }
+
+    public void confirmChosenServices(ActionEvent actionEvent) {
+        if (chosenServicesArea.getText().isEmpty()) {
+            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
+            chosenServicesArea.setPromptText("Выберите службы реагирования!");
+        } else {
+            JsonObject jsonObject = new JsonObject();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            jsonObject.addProperty("services", chosenServicesArea.getText());
+            jsonObject.addProperty("report_id", reportTableData.getId());
+            jsonObject.addProperty("confirm_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            try {
+                HttpResponse response = SimpleRequestManager.sendPostRequest("/confirm-chosen-services", gson.toJson(jsonObject));
+                int code = response.getResponseCode();
+                if(code == 200){
+                    buttonConfirmServices.setStyle("");
+                    buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                    buttonConfirmServices.setDisable(true);
+                    buttonNextWindow.setDisable(false);
+                } else {
+                    System.err.println("Ошибка загрузки!");
+                }
+            } catch (IOException e) {
+                System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
+            }
+        }
     }
 
     public void confirmStartReacting(ActionEvent actionEvent) {
@@ -334,25 +385,6 @@ public class ReportController {
             }
         } catch (IOException e) {
             System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-        }
-    }
-
-    public void moveToNextWindow(ActionEvent actionEvent) {
-        firstWindowSupport.setVisible(false);
-        secondWindowSupport.setVisible(true);
-
-    }
-
-    public void confirmChosenServices(ActionEvent actionEvent) {
-        //TODO:Доделать
-        if (chosenServicesArea.getText().isEmpty()) {
-            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
-            chosenServicesArea.setPromptText("Выберите службы реагирования!");
-        } else {
-            buttonConfirmServices.setStyle("");
-            buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-            buttonConfirmServices.setDisable(true);
-            buttonNextWindow.setDisable(false);
         }
     }
 }
