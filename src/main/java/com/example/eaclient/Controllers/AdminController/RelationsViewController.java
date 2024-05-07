@@ -38,19 +38,6 @@ public class RelationsViewController {
 
     private final Gson gson = new Gson();
 
-//    private void showAlert(String title, String warning, int code) {
-//        Alert alert = null;
-//        if (code == 1){
-//            alert = new Alert(Alert.AlertType.INFORMATION);
-//        } else if(code == 2){
-//            alert = new Alert(Alert.AlertType.WARNING);
-//        }
-//        alert.setTitle(title);
-//        alert.setHeaderText(null);
-//        alert.setContentText(warning);
-//        alert.showAndWait();
-//    }
-
     public void initData() {
         choiceBoxServices.getItems().clear();
         choiceBoxKinds.getItems().clear();

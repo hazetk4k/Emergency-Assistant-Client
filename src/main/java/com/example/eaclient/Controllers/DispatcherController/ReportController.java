@@ -1,18 +1,25 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
+import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Models.Applicant;
 import com.example.eaclient.Models.DataReportApplicant;
+import com.example.eaclient.Models.DispChoice;
 import com.example.eaclient.Models.Report;
 import com.example.eaclient.Network.HttpRequests.HttpResponse;
 import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
+import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +55,7 @@ public class ReportController {
     @FXML
     public Button buttonStartReacting;
     @FXML
-    public ListView<String> recommendedServicesList;
+    public ListView<String> recommendedServicesList; //TODO: Проконсультироваться на счет рекомендаций
     @FXML
     public TextArea chosenServicesArea; // Сделано
     @FXML
@@ -64,9 +71,13 @@ public class ReportController {
     @FXML
     public TextField applicantNameAndPhone; //Сделано
     @FXML
-    public TextField casualtiesAmount;
-    public VBox vboxConfirmStartReaction;
-    public VBox vboxConfirmChosenServices;
+    public TextField casualtiesAmount; //Сделано
+    @FXML
+    public VBox vboxConfirmStartReaction; //Сделано
+    @FXML
+    public VBox vboxConfirmChosenServices; //Сделано
+    @FXML
+    public VBox secondWindowSupport;
     private AllReportsTable reportTableData; //Сделано
 
     private Report report;
@@ -75,13 +86,10 @@ public class ReportController {
 
     private final Gson gson = new Gson();
 
-
     public void initData(AllReportsTable rowData) {
         this.reportTableData = rowData;
 
-        vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-
+        loadChoicesData();
         loadReportApplicantData();
         loadEmergencyData();
 
@@ -109,26 +117,49 @@ public class ReportController {
         });
 
         kindComboBox.setOnAction(event -> {
-            recommendedServicesList.getItems().clear();
-            List<String> listOfServices;
             String selectedKind = kindComboBox.getValue();
             if (selectedKind != null) {
-                try {
-                    HttpResponse response = SimpleRequestManager.sendGetRequest("/get-services-by-kind", "kind=" + selectedKind);
-                    int code = response.getResponseCode();
-                    if (code == 200) {
-                        String body = response.getResponseBody();
-                        listOfServices = gson.fromJson(body, List.class);
-                        assert listOfServices!=null;
-                        recommendedServicesList.getItems().addAll(listOfServices);
-                    } else {
-                        System.err.println("Ошибка загрузки!");
-                    }
-                } catch (IOException e) {
-                    System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-                }
+                loadRecommendedServices(selectedKind);
             }
         });
+
+    }
+
+    public void loadChoicesData() {
+        try {
+            HttpResponse httpResponse = SimpleRequestManager.sendGetRequest("/get-dispatcher-choice", "report_id=" + reportTableData.getId());
+            int code = httpResponse.getResponseCode();
+            if (code == 200) {
+                String body = httpResponse.getResponseBody();
+                DispChoice dispChoice = gson.fromJson(body, DispChoice.class);
+
+                charChoiceBox.setValue(dispChoice.getName_char());
+                kindComboBox.setValue(dispChoice.getName_kind());
+                //TODO:Сделать проверку на кастомный вид
+                loadRecommendedServices(dispChoice.getName_kind());
+                charChoiceBox.setDisable(true);
+                kindComboBox.setDisable(true);
+                buttonStartReacting.setDisable(true);
+
+                if (dispChoice.getServices() == null || Objects.equals(dispChoice.getServices(), "")) {
+                    vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                    buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                    buttonConfirmServices.setDisable(false);
+                } else {
+                    buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                    //TODO: Добавить обработку выбора чекбоксов
+                    chosenServicesArea.setText(dispChoice.getServices());
+                }
+            } else if (code == 404) {
+                System.out.println("Заявление еще не просмотрено!");
+                vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+            } else {
+                System.err.println("Ошибка загрузки!");
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка загрузки результатов реагирования" + e.getMessage());
+        }
     }
 
     public void loadReportApplicantData() {
@@ -162,6 +193,7 @@ public class ReportController {
                 } else {
                     user_in_danger = "В безопасности";
                 }
+
                 applicantStatusField.setText(user_in_danger);
 
                 additionalInfoArea.setText(report.getAdditional_info());
@@ -226,6 +258,26 @@ public class ReportController {
         }
     }
 
+    private void loadRecommendedServices(String kind) {
+        recommendedServicesList.getItems().clear();
+        List<String> listOfServices;
+        try {
+            HttpResponse response = SimpleRequestManager.sendGetRequest("/get-services-by-kind", "kind=" + kind);
+            int code = response.getResponseCode();
+            if (code == 200) {
+                String body = response.getResponseBody();
+                listOfServices = gson.fromJson(body, List.class);
+                if (listOfServices != null) {
+                    recommendedServicesList.getItems().addAll(listOfServices);
+                }
+            } else {
+                System.err.println("Рекомендации не загружены!");
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
+        }
+    }
+
     public void openApplicantProfile(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DispatcherWindows/ApplicantProfileWindow.fxml"));
@@ -248,17 +300,47 @@ public class ReportController {
     }
 
     public void confirmStartReacting(ActionEvent actionEvent) {
-        //TODO:Доделать
-        vboxConfirmStartReaction.setStyle("");
-        buttonStartReacting.setStyle("");
-        vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonStartReacting.setDisable(true);
-        buttonConfirmServices.setDisable(false);
+        if (charChoiceBox.getValue() == null) {
+            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле характра ЧС", 2);
+            return;
+        }
+
+        if (kindComboBox.getValue() == null) {
+            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле вида ЧС", 2);
+            return;
+        }
+
+        try {
+            JsonObject jsonObject = new JsonObject();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+
+            jsonObject.addProperty("start_action_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            jsonObject.addProperty("report_id", reportTableData.getId());
+            jsonObject.addProperty("disp_login", ServiceSingleton.getInstance().getCurrentUser());
+            jsonObject.addProperty("char_name", charChoiceBox.getValue());
+            jsonObject.addProperty("kind_name", kindComboBox.getValue());
+
+            HttpResponse response = SimpleRequestManager.sendPostRequest("/start-action-time", gson.toJson(jsonObject));
+            int code = response.getResponseCode();
+            if (code == 200) {
+                vboxConfirmStartReaction.setStyle("");
+                buttonStartReacting.setStyle("");
+                vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+                buttonStartReacting.setDisable(true);
+                buttonConfirmServices.setDisable(false);
+            } else {
+                System.err.println("Ошибка загрузки!");
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
+        }
     }
 
     public void moveToNextWindow(ActionEvent actionEvent) {
-        //TODO: Доделать
+        firstWindowSupport.setVisible(false);
+        secondWindowSupport.setVisible(true);
+
     }
 
     public void confirmChosenServices(ActionEvent actionEvent) {
