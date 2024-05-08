@@ -6,16 +6,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="620.0" prefWidth="859.0" stylesheets="@../../css/ReportsStylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.AllReportsController">
+<AnchorPane prefHeight="718.0" prefWidth="1185.0" stylesheets="@../../css/ReportsStylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.AllReportsController">
 
     <Button fx:id="toggleMenuButton" onAction="#toggleMenu" prefWidth="230.0" text="☰" />
 
     <TableView fx:id="tableView" layoutX="19.0" layoutY="30.0" prefHeight="581.0" prefWidth="818.0" styleClass="custom-table" stylesheets="@../../css/TableStyle.css" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="19.800000000000068" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="30.0">
         <columns>
             <TableColumn fx:id="id" prefWidth="97.60000419616699" text="№ Заявления" />
-            <TableColumn fx:id="type" prefWidth="303.20001220703125" text="Тип происшетсвия" />
-            <TableColumn fx:id="timestamp" prefWidth="104.79995727539062" text="Дата и время" />
-            <TableColumn id="d" fx:id="place" prefWidth="104.0" text="Место" />
+            <TableColumn fx:id="type" prefWidth="252.79999542236328" text="Тип происшествия" />
+            <TableColumn fx:id="timestamp" prefWidth="126.4000244140625" text="Дата и время" />
+            <TableColumn id="d" fx:id="place" prefWidth="164.79995727539062" text="Место происшествия" />
             <TableColumn fx:id="fio" prefWidth="92.7999267578125" text="Заявитель" />
             <TableColumn fx:id="wasSeen" prefWidth="75.0" text="Статус" />
         </columns>
