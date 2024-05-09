@@ -3,20 +3,17 @@ package com.example.eaclient.Controllers.DispatcherController;
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.AllReportsTable;
 import com.example.eaclient.Models.Applicant;
-import com.example.eaclient.Models.DataReportApplicant;
 import com.example.eaclient.Models.DispChoice;
 import com.example.eaclient.Models.Report;
-import com.example.eaclient.Network.HttpRequests.HttpResponse;
-import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
+import com.example.eaclient.Models.ReportApplicant;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,7 +87,7 @@ public class ReportController {
     @FXML
     public TextArea otherChosenServicesArea;
     @FXML
-    public Button btnCleanNewSevices;
+    public Button btnCleanNewServices;
     @FXML
     public ListView<CheckBox> otherServicesList;
     @FXML
@@ -123,7 +120,10 @@ public class ReportController {
     public TextField charField2;
     @FXML
     public Button buttonConfirmReceivedData;
-    //Дополнительные поля
+    @FXML
+    public VBox vboxAdditionalServicesCalling;
+    @FXML
+    public VBox vboxRecievedData;
     private AllReportsTable reportTableData;
     private Report report;
     private Applicant applicant;
@@ -131,189 +131,448 @@ public class ReportController {
     private List<String> listOfRecommendedServices;
     private List<String> chars;
     private List<String> services;
-    //Gson
-    private final Gson gson = new Gson();
 
-    // Загрузка окна 1
+    private final ReportControllerRequests requestsManager = new ReportControllerRequests();
+
     public void initData(AllReportsTable rowData) {
         this.reportTableData = rowData;
         loadReportApplicantData();
         loadCharsAndServices();
-        setUpServices(allServicesList, chosenServicesArea);
         loadChoicesStage();
-
-        districtsChoiceBox.getItems().addAll("Район 1", "Район 2", "Район 3");
-        Tooltip.install(districtsChoiceBox, setToolTip("Выберите район"));
-
-        charChoiceBox.setOnAction(event -> {
-            kindComboBox.getItems().clear();
-            List<String> listOfKinds;
-            String selectedValue = charChoiceBox.getValue();
-            if (selectedValue != null) {
-                try {
-                    HttpResponse response = SimpleRequestManager.sendGetRequest("/get-kinds-of-char", "char=" + selectedValue);
-                    int code = response.getResponseCode();
-                    if (code == 200) {
-                        String body = response.getResponseBody();
-                        listOfKinds = gson.fromJson(body, List.class);
-                        assert listOfKinds != null;
-                        kindComboBox.getItems().addAll(listOfKinds);
-                        kindComboBox.setDisable(false);
-                    } else {
-                        System.err.println("Ошибка загрузки!");
-                    }
-                } catch (IOException e) {
-                    System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-                }
-            }
-        });
-        kindComboBox.setOnAction(event -> {
-            String selectedKind = kindComboBox.getValue();
-            if (selectedKind != null) {
-                loadRecommendedServices(selectedKind);
-            }
-        });
-
+        //TODO:ДОДЕЛАТЬ ЭТИ РАЙОНЫ
+//        districtsChoiceBox.getItems().addAll("Район 1", "Район 2", "Район 3");
+//        Tooltip.install(districtsChoiceBox, setToolTip("Выберите район"));
     }
 
-    public void loadChoicesStage() {
-        try {
-            HttpResponse httpResponse = SimpleRequestManager.sendGetRequest("/get-dispatcher-choice", "report_id=" + reportTableData.getId());
-            int code = httpResponse.getResponseCode();
-            if (code == 200) {
-                String body = httpResponse.getResponseBody();
-                dispChoice = gson.fromJson(body, DispChoice.class);
-                stage1Load();
-            } else if (code == 404) {
-                System.out.println("Заявление еще не просмотрено!");
-                loadTypeKindChar();
-                vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-                buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-            } else {
-                System.err.println("Ошибка загрузки!");
-            }
-        } catch (IOException e) {
-            System.err.println("Ошибка загрузки результатов реагирования" + e.getMessage());
+    //кнопки подтверждения выбора
+    public void confirmStartReacting(ActionEvent actionEvent) {
+        if (charChoiceBox.getValue() == null) {
+            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле характра ЧС", 2);
+            return;
         }
+
+        if (kindComboBox.getValue() == null) {
+            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле вида ЧС", 2);
+            return;
+        }
+
+        JsonObject jsonObject = new JsonObject();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        jsonObject.addProperty("start_action_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        jsonObject.addProperty("report_id", reportTableData.getId());
+        jsonObject.addProperty("disp_login", ServiceSingleton.getInstance().getCurrentUser());
+        jsonObject.addProperty("char_name", charChoiceBox.getValue());
+        jsonObject.addProperty("kind_name", kindComboBox.getValue());
+
+        int flag = requestsManager.confirmStage(jsonObject, "/start-action-time");
+
+        if (flag == 1) {
+            dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+            stage1Load();
+            preLoadStage2();
+        }
+
     }
 
-    public void stage1Load() {
+    public void confirmChosenServices(ActionEvent actionEvent) {
+        if (chosenServicesArea.getText().isEmpty()) {
+            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
+            chosenServicesArea.setPromptText("Выберите службы реагирования!");
+        } else {
+            JsonObject jsonObject = new JsonObject();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            jsonObject.addProperty("services", chosenServicesArea.getText());
+            jsonObject.addProperty("report_id", reportTableData.getId());
+            jsonObject.addProperty("confirm_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            int flag = requestsManager.confirmStage(jsonObject, "/confirm-chosen-services");
+
+            if (flag == 1) {
+                dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+                stage2Load();
+                preLoadStage3();
+            }
+        }
+
+    }
+
+    public void confirmReceivedData(ActionEvent actionEvent) {
+        if (radioDiedInDisaster.isSelected() && diedAmountField.getText().isEmpty()) {
+            WindowManager.showAlert("Не введены данные!", "Введите количество погибших", 2);
+            return;
+        }
+        if (radioPeopleAmount.isSelected() && peopleAmountField.getText().isEmpty()) {
+            WindowManager.showAlert("Не введены данные!", "Введите количество людей, находящихся на месте происшествия", 2);
+            return;
+        }
+
+        JsonObject jsonObject = new JsonObject();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        String died_string;
+        if (radioDiedInDisaster.isSelected()) {
+            died_string = diedAmountField.getText();
+        } else {
+            died_string = "0";
+        }
+        jsonObject.addProperty("died_in_disaster_amount", Integer.parseInt(died_string));
+
+        String people_string;
+        if (radioPeopleAmount.isSelected()) {
+            people_string = peopleAmountField.getText();
+        } else {
+            people_string = "0";
+        }
+        jsonObject.addProperty("people_in_area_amount", Integer.parseInt(people_string));
+
+        jsonObject.addProperty("report_id", reportTableData.getId());
+        jsonObject.addProperty("receivedDataDateTime", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        int flag = requestsManager.confirmStage(jsonObject, "/confirm-received-data");
+        if (flag == 1) {
+            dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+            stage3Load();
+            preLoadStage4();
+        }
+
+    }
+
+    public void callOtherServices(ActionEvent actionEvent) {
+        JsonObject jsonObject = new JsonObject();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        jsonObject.addProperty("additional_services", otherChosenServicesArea.getText());
+        jsonObject.addProperty("report_id", reportTableData.getId());
+        jsonObject.addProperty("additional_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        int flag = requestsManager.confirmStage(jsonObject, "/confirm-other-chosen-services");
+        if (flag == 1) {
+            dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+            stage4Load();
+            preLoadStage5();
+        }
+
+    }
+
+    public void confirmEndReacting(ActionEvent actionEvent) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("report_id", reportTableData.getId());
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        jsonObject.addProperty("end_actions_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        int flag = requestsManager.confirmStage(jsonObject, "/end-action-time");
+        if (flag == 1) {
+            dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+            stage5Load();
+            //TODO: Документация
+        }
+
+    }
+
+    // Загрузка стадий:
+    public void stage1Load() { //определен
+        // установка выбранных значений
         charChoiceBox.setValue(dispChoice.getName_char());
         kindComboBox.setValue(dispChoice.getName_kind());
         loadRecommendedServices(dispChoice.getName_kind());
 
+        // отключить старые элементы
         charChoiceBox.setDisable(true);
-        kindComboBox.setDisable(true);
         buttonStartReacting.setDisable(true);
-        if (dispChoice.getServices() == null || Objects.equals(dispChoice.getServices(), "")) {
-            vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-            buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-            buttonConfirmServices.setDisable(false);
-        } else {
-            stage2Load();
-        }
+        kindComboBox.setDisable(true);
+
+        //убрать старые подсказки
+        vboxConfirmStartReaction.setStyle("");
+        buttonStartReacting.setStyle("");
+
+    }
+
+    public void preLoadStage2() {
+        //установка подказок
+        vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmServices.setDisable(false);
     }
 
     public void stage2Load() {
-        setUpChosenServices(allServicesList);
-        btnCleanServices.setDisable(true);
-        buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        allServicesList.setDisable(true);
+        recommendedServicesList.getItems().clear();
+        stage1Load();
         buttonNextWindow.setDisable(false);
-        stage3Load();
-        chosenServicesArea.setText(dispChoice.getServices());
+        //убрать подсказки
+        vboxConfirmChosenServices.setStyle("");
+        buttonConfirmServices.setStyle("");
+        buttonConfirmServices.setDisable(true);
+        //установка уже выбранных значений
+        recommendedServicesList2.getItems().clear();
+        if (listOfRecommendedServices != null) {
+            recommendedServicesList2.getItems().addAll(listOfRecommendedServices);
+        } else recommendedServicesList2.getItems().add("Данный вид происшествия не определен");
+
+        String chosenServices = dispChoice.getServices();
+        List<String> chosenServicesList = Arrays.asList(chosenServices.split("\n"));
+        List<CheckBox> checkBoxList = new ArrayList<>();
+        for (String service : services) {
+            if (!chosenServicesList.contains(service)) {
+                CheckBox checkBox = new CheckBox(service);
+                checkBoxList.add(checkBox);
+            }
+        }
+        otherServicesList.getItems().clear();
+        otherServicesList.getItems().addAll(checkBoxList);
+        System.out.println("Установка выбранных служб, dispchoice:" + dispChoice.getServices());
+//        chosenServicesArea.setText(dispChoice.getServices());
+
+        //установка слушателей
+        setUpServices(otherChosenServicesArea, checkBoxList);
+        setUpChosenServices(allServicesList, dispChoice.getServices());
+        //блокировать предыдущие действия
+        btnCleanServices.setDisable(true);
+        buttonConfirmServices.setDisable(true);
+        allServicesList.setDisable(true);
+
+        //перенос выборов на вторую страницу
+        typeField2.setText(report.getType());
+        kindField2.setText(dispChoice.getName_kind());
+        charField2.setText(dispChoice.getName_char());
+        casualtiesField2.setText(report.getCasualties_amount());
+        //TODO: Дополнить адрес районом
+        placeField2.setText(report.getPlace());
+        String user_in_danger;
+        if (report.getUser_in_danger()) {
+            user_in_danger = "В опасности";
+        } else {
+            user_in_danger = "В безопасности";
+        }
+        userStatusField2.setText(user_in_danger);
+        datetimeField2.setText(report.getTimestamp());
+        additionalDataField2.setText(report.getAdditional_info());
+
+        //установка слушателей
+        radioDiedInDisaster.setOnAction(event -> {
+            if (radioDiedInDisaster.isSelected()) {
+                diedAmountField.setDisable(false);
+            } else {
+                diedAmountField.clear();
+                diedAmountField.setDisable(true);
+            }
+        });
+
+        radioPeopleAmount.setOnAction(event -> {
+            if (radioPeopleAmount.isSelected()) {
+                peopleAmountField.setDisable(false);
+            } else {
+                peopleAmountField.clear();
+                peopleAmountField.setDisable(true);
+            }
+        });
+
+        diedAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                diedAmountField.setText(oldValue);
+            }
+        });
+
+        peopleAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                peopleAmountField.setText(oldValue);
+            }
+        });
     }
 
-    public void setUpChosenServices(ListView<CheckBox> list){
-        String[] services = dispChoice.getServices().split("\n");
-        for (CheckBox checkBox : list.getItems()) {
-            String checkBoxText = checkBox.getText().trim();
-            for (String service : services) {
-                if (service.trim().equals(checkBoxText)) {
-                    checkBox.setSelected(true);
+    public void preLoadStage3() {
+        //установка подсказок
+        buttonConfirmReceivedData.setDisable(false);
+        buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        vboxRecievedData.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmReceivedData.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+    }
+
+    public void stage3Load() {
+        stage2Load();
+
+        //Убрать подсказки
+        buttonConfirmReceivedData.setDisable(true);
+        buttonNextWindow.setStyle("");
+        vboxRecievedData.setStyle("");
+        buttonConfirmReceivedData.setStyle("");
+
+        //установить значения
+        if (dispChoice.getDead_amount() == 0) {
+            radioDiedInDisaster.setSelected(false);
+        } else {
+            radioDiedInDisaster.setSelected(true);
+            diedAmountField.setText(Integer.toString(dispChoice.getDead_amount()));
+        }
+
+
+        if (dispChoice.getPeople_amount() == 0) {
+            radioPeopleAmount.setSelected(false);
+        } else {
+            radioPeopleAmount.setSelected(true);
+            peopleAmountField.setText(Integer.toString(dispChoice.getPeople_amount()));
+        }
+        //заблокировать старый функционал
+        peopleAmountField.setEditable(false);
+        diedAmountField.setEditable(false);
+        radioDiedInDisaster.setDisable(true);
+        radioPeopleAmount.setDisable(true);
+    }
+
+    public void preLoadStage4() {
+        vboxAdditionalServicesCalling.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonCallOtherServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonCallOtherServices.setDisable(false);
+    }
+
+    public void stage4Load() {
+        stage3Load();
+        //убрать подсказки
+        buttonCallOtherServices.setStyle("");
+        // загрузка данных
+        setUpChosenServices(otherServicesList, dispChoice.getAdditional_services());
+        otherChosenServicesArea.setText(dispChoice.getAdditional_services());
+        //заблокировать старый функционал
+        otherServicesList.setDisable(true);
+        btnCleanNewServices.setDisable(true);
+        buttonCallOtherServices.setDisable(true);
+
+    }
+
+    public void preLoadStage5() {
+        buttonConfirmEndReacting.setDisable(false);
+        buttonConfirmEndReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+    }
+
+    public void stage5Load() { //пользователь закончил реагирование на чс
+        stage4Load();
+        //TODO:Получение отчета
+        buttonConfirmEndReacting.setStyle("");
+        buttonConfirmEndReacting.setDisable(true);
+    }
+
+    //Загрузка данных
+    public void loadChoicesStage() {
+        dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+        if (dispChoice == null || Objects.equals(dispChoice.getStage(), "0")) {
+            loadTypeKindChar();
+            vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+            buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        } else {
+            switch (dispChoice.getStage()) {
+                case "1":
+                    //определен вид и характре чс
+                    stage1Load();
+                    preLoadStage2();
                     break;
-                }
+                case "2":
+                    //вызваны службы
+                    stage2Load();
+                    preLoadStage3();
+                    break;
+                case "3":
+                    // собрана информация от служб
+                    stage3Load();
+                    preLoadStage4();
+                    break;
+                case "4":
+                    //вызваны дополнительные службы
+                    stage4Load();
+                    preLoadStage5();
+                    break;
+                case "5":
+                    //реагирование окончено
+                    stage5Load();
+                    break;
             }
         }
     }
 
     public void loadReportApplicantData() { //загружаются заявление и данные о пользователе
-        try {
-            HttpResponse response = SimpleRequestManager.sendGetRequest("/get-report-applicant-data", "report_id=" + reportTableData.getId());
-            int code = response.getResponseCode();
-            if (code == 200) {
-                String body = response.getResponseBody();
-                DataReportApplicant data = gson.fromJson(body, DataReportApplicant.class);
-                report = data.getReport();
-                applicant = data.getApplicant();
+        ReportApplicant reportApplicantData = requestsManager.loadReportApplicantData(reportTableData.getId());
+        report = reportApplicantData.getReport();
+        applicant = reportApplicantData.getApplicant();
 
-                String fio = ApplicantProfileController.makeFIO(
-                        applicant.getName(),
-                        applicant.getSurname(),
-                        applicant.getPatronymic()
-                );
-
-                applicantNameAndPhone.setText(makeFIOAndPhoneString(
-                        fio,
-                        applicant.getPhone_number())
-                );
-
-                placeNameField.setText(report.getPlace());
-                dateTimeField.setText(report.getTimestamp());
-                typeNameField.setText(report.getType());
-
-                String user_in_danger;
-                if (report.getUser_in_danger()) {
-                    user_in_danger = "В опасности";
-                } else {
-                    user_in_danger = "В безопасности";
-                }
-
-                applicantStatusField.setText(user_in_danger);
-
-                additionalInfoArea.setText(report.getAdditional_info());
-                if (report.getAre_there_any_casualties()) {
-                    casualtiesAmount.setText(report.getCasualties_amount());
-                } else {
-                    casualtiesAmount.setText("Отсутствуют");
-                }
-
-            } else {
-                System.err.println("Ошибка загрузки");
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        String fio = ApplicantProfileController.makeFIO(applicant.getName(), applicant.getSurname(), applicant.getPatronymic());
+        applicantNameAndPhone.setText(makeFIOAndPhoneString(fio, applicant.getPhone_number()));
+        placeNameField.setText(report.getPlace());
+        dateTimeField.setText(report.getTimestamp());
+        typeNameField.setText(report.getType());
+        String user_in_danger;
+        if (report.getUser_in_danger()) {
+            user_in_danger = "В опасности";
+        } else {
+            user_in_danger = "В безопасности";
+        }
+        applicantStatusField.setText(user_in_danger);
+        additionalInfoArea.setText(report.getAdditional_info());
+        if (report.getAre_there_any_casualties()) {
+            casualtiesAmount.setText(report.getCasualties_amount());
+        } else {
+            casualtiesAmount.setText("Отсутствуют");
         }
     }
 
-    public void loadCharsAndServices() { //загружаются характеры и службы
-        try {
-            HttpResponse response = SimpleRequestManager.sendGetRequest("/set-up-emergency-data");
-            int code = response.getResponseCode();
-            if (code == 200) {
-                String body = response.getResponseBody();
-                Type type = new TypeToken<Map<String, List<String>>>() {
-                }.getType();
-                Map<String, List<String>> emergencyData = gson.fromJson(body, type);
+    public void loadCharsAndServices() {
+        Map<String, List<String>> emergencyData = requestsManager.loadCharsAndServicesData();
+        chars = emergencyData.get("chars");
+        services = emergencyData.get("services");
 
-                chars = emergencyData.get("chars");
-                services = emergencyData.get("services");
-            } else {
-                System.err.println("Ошибка загрузки!");
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    public void setUpServices(ListView<CheckBox> list, TextArea area) {
         List<CheckBox> checkBoxList = new ArrayList<>();
         for (String service : services) {
             CheckBox checkBox = new CheckBox(service);
             checkBoxList.add(checkBox);
         }
-        list.getItems().addAll(checkBoxList);
+        allServicesList.getItems().addAll(checkBoxList);
+        chosenServicesArea.clear();
+        setUpServices(chosenServicesArea, checkBoxList);
+    }
 
+    public void loadTypeKindChar() {
+        String type = report.getType();
+        Map<String, String> map = requestsManager.loadKindCharByType(type);
+        if (map == null) {
+            charChoiceBox.getItems().addAll(chars);
+            charChoiceBox.setOnAction(event -> {
+                kindComboBox.getItems().clear();
+                List<String> listOfKinds;
+                String selectedValue = charChoiceBox.getValue();
+                if (selectedValue != null) {
+                    listOfKinds = requestsManager.loadKindsOfChar(selectedValue);
+                    assert listOfKinds != null;
+                    kindComboBox.getItems().addAll(listOfKinds);
+                    kindComboBox.setDisable(false);
+                }
+            });
+
+            kindComboBox.setOnAction(event -> {
+                String selectedKind = kindComboBox.getValue();
+                if (selectedKind != null) {
+                    loadRecommendedServices(selectedKind);
+                }
+            });
+        } else {
+            String kind_name = map.get("kind_name");
+            String char_name = map.get("char_name");
+            charChoiceBox.setValue(char_name);
+            kindComboBox.setValue(kind_name);
+            charChoiceBox.setDisable(true);
+            kindComboBox.setDisable(true);
+            recommendedServicesList.getItems().clear();
+            loadRecommendedServices(kindComboBox.getValue());
+        }
+    }
+
+    private void loadRecommendedServices(String kind) {
+        listOfRecommendedServices = requestsManager.loadRecommendedServices(kind);
+        if (listOfRecommendedServices != null) {
+            recommendedServicesList.getItems().addAll(listOfRecommendedServices);
+        } else {
+            recommendedServicesList.getItems().add("Данный вид происшествия не определен");
+        }
+    }
+
+
+    // Дополнительные методы
+    public void setUpServices(TextArea area, List<CheckBox> checkBoxList) {
         for (CheckBox checkBox : checkBoxList) {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
@@ -326,57 +585,19 @@ public class ReportController {
         }
     }
 
-    public void loadTypeKindChar() {
-        String type = report.getType();
-        try {
-            HttpResponse httpResponse = SimpleRequestManager.sendGetRequest("/get-kind-char-by-type", "type_name=" + type);
-            int code = httpResponse.getResponseCode();
-            if (code == 200) {
-                String response = httpResponse.getResponseBody();
-                Map<String, String> map = gson.fromJson(response, Map.class);
-                String kind_name = map.get("kind_name");
-                String char_name = map.get("char_name");
-                charChoiceBox.setValue(char_name);
-                kindComboBox.setValue(kind_name);
-                charChoiceBox.setDisable(true);
-                kindComboBox.setDisable(true);
-                loadRecommendedServices(kindComboBox.getValue());
-            } else if (code == 404) {
-                charChoiceBox.getItems().addAll(chars);
-                System.out.println("Связь с типом не найдена!");
-            } else {
-                System.err.println("Ошибка при поиске связей с указанным типом!");
+    public void setUpChosenServices(ListView<CheckBox> list, String chosenServices) {
+        String[] services = chosenServices.split("\n");
+        for (CheckBox checkBox : list.getItems()) {
+            String checkBoxText = checkBox.getText().trim();
+            for (String service : services) {
+                if (service.trim().equals(checkBoxText)) {
+                    checkBox.setSelected(true);
+                    break;
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Ошибка при поиске связанных с типом данных: " + e.getMessage());
         }
     }
 
-    // Загрузка окна 2
-    public void stage3Load() {
-        typeField2.setText(typeNameField.getText());
-        kindField2.setText(kindComboBox.getValue());
-        charField2.setText(charChoiceBox.getValue());
-        casualtiesField2.setText(casualtiesAmount.getText());
-        //TODO: Дополнить адрес районом
-        placeField2.setText(placeNameField.getText());
-        userStatusField2.setText(applicantStatusField.getText());
-        datetimeField2.setText(dateTimeField.getText());
-        additionalDataField2.setText(additionalInfoArea.getText());
-
-        if (listOfRecommendedServices != null) {
-            recommendedServicesList2.getItems().addAll(listOfRecommendedServices);
-        } else recommendedServicesList2.getItems().add("Данный вид происшествия не определен");
-
-        setUpServices(otherServicesList, otherChosenServicesArea);
-        setUpChosenServices(otherServicesList);
-    }
-
-    public void stage4Load(){}
-
-    public void stage5Load(){}
-
-    // Дополнительные методы
     public Tooltip setToolTip(String text) {
         Tooltip tooltip = new Tooltip(text);
         tooltip.setShowDelay(Duration.millis(500));
@@ -391,27 +612,6 @@ public class ReportController {
         return stringBuilder.toString();
     }
 
-    private void loadRecommendedServices(String kind) {
-        recommendedServicesList.getItems().clear();
-        try {
-            HttpResponse response = SimpleRequestManager.sendGetRequest("/get-services-by-kind", "kind=" + kind);
-            int code = response.getResponseCode();
-            if (code == 200) {
-                String body = response.getResponseBody();
-                listOfRecommendedServices = gson.fromJson(body, List.class);
-                if (listOfRecommendedServices != null) {
-                    recommendedServicesList.getItems().addAll(listOfRecommendedServices);
-                }
-            } else if (code == 404) {
-                recommendedServicesList.getItems().add("Данный вид происшествия не определен");
-                System.out.println("К данному виду нет рекомендаций");
-            } else {
-                System.err.println("Рекомендации не загружены!");
-            }
-        } catch (IOException e) {
-            System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-        }
-    }
 
     // Кнопки взаимодействия
     public void openApplicantProfile(ActionEvent actionEvent) {
@@ -441,8 +641,9 @@ public class ReportController {
     }
 
     public void cleanUpNewServices(ActionEvent actionEvent) {
-
+        otherServicesList.getItems().forEach(checkBox -> checkBox.setSelected(false));
     }
+
 
     // Кнопки переходов окно 1 и 2
     public void moveToNextWindow(ActionEvent actionEvent) {
@@ -455,83 +656,5 @@ public class ReportController {
         firstWindowSupport.setVisible(true);
     }
 
-    //кнопки подтверждения выбора окно 1
-    public void confirmStartReacting(ActionEvent actionEvent) {
-        if (charChoiceBox.getValue() == null) {
-            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле характра ЧС", 2);
-            return;
-        }
 
-        if (kindComboBox.getValue() == null) {
-            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле вида ЧС", 2);
-            return;
-        }
-
-        try {
-            JsonObject jsonObject = new JsonObject();
-            LocalDateTime currentDateTime = LocalDateTime.now();
-
-            jsonObject.addProperty("start_action_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-            jsonObject.addProperty("report_id", reportTableData.getId());
-            jsonObject.addProperty("disp_login", ServiceSingleton.getInstance().getCurrentUser());
-            jsonObject.addProperty("char_name", charChoiceBox.getValue());
-            jsonObject.addProperty("kind_name", kindComboBox.getValue());
-
-            HttpResponse response = SimpleRequestManager.sendPostRequest("/start-action-time", gson.toJson(jsonObject));
-            int code = response.getResponseCode();
-            if (code == 200) {
-                vboxConfirmStartReaction.setStyle("");
-                buttonStartReacting.setStyle("");
-                vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-                buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-                buttonStartReacting.setDisable(true);
-                buttonConfirmServices.setDisable(false);
-            } else {
-                System.err.println("Ошибка загрузки!");
-            }
-        } catch (IOException e) {
-            System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-        }
-    }
-
-    public void confirmChosenServices(ActionEvent actionEvent) {
-        if (chosenServicesArea.getText().isEmpty()) {
-            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
-            chosenServicesArea.setPromptText("Выберите службы реагирования!");
-        } else {
-            JsonObject jsonObject = new JsonObject();
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            jsonObject.addProperty("services", chosenServicesArea.getText());
-            jsonObject.addProperty("report_id", reportTableData.getId());
-            jsonObject.addProperty("confirm_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-            try {
-                HttpResponse response = SimpleRequestManager.sendPostRequest("/confirm-chosen-services", gson.toJson(jsonObject));
-                int code = response.getResponseCode();
-                if (code == 200) {
-                    buttonConfirmServices.setStyle("");
-                    buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-                    buttonConfirmServices.setDisable(true);
-                    buttonNextWindow.setDisable(false);
-                    stage3Load();
-                } else {
-                    System.err.println("Ошибка загрузки!");
-                }
-            } catch (IOException e) {
-                System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
-            }
-        }
-    }
-
-    //кнопки подтверждания выбора окна 2
-    public void confirmReceivedData(ActionEvent actionEvent) {
-        //TODO:Сделать
-    }
-
-    public void callOtherServices(ActionEvent actionEvent) {
-        //TODO:Сделать
-    }
-
-    public void confirmEndReacting(ActionEvent actionEvent) {
-        //TODO:Сделать
-    }
 }
