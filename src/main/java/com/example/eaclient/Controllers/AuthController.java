@@ -90,10 +90,10 @@ public class AuthController {
                     Stage stage = (Stage) button.getScene().getWindow();
                     stage.close();
                 }
+                ServiceSingleton.getInstance().setCurrentUserId(jsonObject.get("user_id").getAsInt());
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
-
 }

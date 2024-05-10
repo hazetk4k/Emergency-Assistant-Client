@@ -55,7 +55,7 @@ public class ReportController {
     @FXML
     public Button buttonStartReacting;
     @FXML
-    public ListView<String> recommendedServicesList; //TODO: Проконсультироваться на счет рекомендаций
+    public ListView<String> recommendedServicesList;
     @FXML
     public TextArea chosenServicesArea; // Сделано
     @FXML
@@ -99,10 +99,6 @@ public class ReportController {
     @FXML
     public TextField peopleAmountField;
     @FXML
-    public RadioButton radioDiedInDisaster;
-    @FXML
-    public RadioButton radioPeopleAmount;
-    @FXML
     public TextArea additionalDataField2; //Сделано
     @FXML
     public TextField userStatusField2; //Сделано
@@ -124,6 +120,12 @@ public class ReportController {
     public VBox vboxAdditionalServicesCalling;
     @FXML
     public VBox vboxRecievedData;
+    @FXML
+    public CheckBox checkPeopleAmount;
+    @FXML
+    public CheckBox checkDiedInDisaster;
+    @FXML
+    public TextField districtField;
     private AllReportsTable reportTableData;
     private Report report;
     private Applicant applicant;
@@ -169,6 +171,7 @@ public class ReportController {
 
         if (flag == 1) {
             dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
+            recommendedServicesList.getItems().clear();
             stage1Load();
             preLoadStage2();
         }
@@ -197,11 +200,11 @@ public class ReportController {
     }
 
     public void confirmReceivedData(ActionEvent actionEvent) {
-        if (radioDiedInDisaster.isSelected() && diedAmountField.getText().isEmpty()) {
+        if (checkDiedInDisaster.isSelected() && diedAmountField.getText().isEmpty()) {
             WindowManager.showAlert("Не введены данные!", "Введите количество погибших", 2);
             return;
         }
-        if (radioPeopleAmount.isSelected() && peopleAmountField.getText().isEmpty()) {
+        if (checkPeopleAmount.isSelected() && peopleAmountField.getText().isEmpty()) {
             WindowManager.showAlert("Не введены данные!", "Введите количество людей, находящихся на месте происшествия", 2);
             return;
         }
@@ -210,7 +213,7 @@ public class ReportController {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         String died_string;
-        if (radioDiedInDisaster.isSelected()) {
+        if (checkDiedInDisaster.isSelected()) {
             died_string = diedAmountField.getText();
         } else {
             died_string = "0";
@@ -218,7 +221,7 @@ public class ReportController {
         jsonObject.addProperty("died_in_disaster_amount", Integer.parseInt(died_string));
 
         String people_string;
-        if (radioPeopleAmount.isSelected()) {
+        if (checkPeopleAmount.isSelected()) {
             people_string = peopleAmountField.getText();
         } else {
             people_string = "0";
@@ -333,10 +336,16 @@ public class ReportController {
         typeField2.setText(report.getType());
         kindField2.setText(dispChoice.getName_kind());
         charField2.setText(dispChoice.getName_char());
-        casualtiesField2.setText(report.getCasualties_amount());
+
+        if (report.getAre_there_any_casualties()) {
+            casualtiesField2.setText(report.getCasualties_amount());
+        } else {
+            casualtiesField2.setText("Отсутствуют");
+        }
         //TODO: Дополнить адрес районом
         placeField2.setText(report.getPlace());
         String user_in_danger;
+        districtField.setText(dispChoice.getStage());
         if (report.getUser_in_danger()) {
             user_in_danger = "В опасности";
         } else {
@@ -347,8 +356,8 @@ public class ReportController {
         additionalDataField2.setText(report.getAdditional_info());
 
         //установка слушателей
-        radioDiedInDisaster.setOnAction(event -> {
-            if (radioDiedInDisaster.isSelected()) {
+        checkDiedInDisaster.setOnAction(event -> {
+            if (checkDiedInDisaster.isSelected()) {
                 diedAmountField.setDisable(false);
             } else {
                 diedAmountField.clear();
@@ -356,8 +365,8 @@ public class ReportController {
             }
         });
 
-        radioPeopleAmount.setOnAction(event -> {
-            if (radioPeopleAmount.isSelected()) {
+        checkPeopleAmount.setOnAction(event -> {
+            if (checkPeopleAmount.isSelected()) {
                 peopleAmountField.setDisable(false);
             } else {
                 peopleAmountField.clear();
@@ -397,24 +406,24 @@ public class ReportController {
 
         //установить значения
         if (dispChoice.getDead_amount() == 0) {
-            radioDiedInDisaster.setSelected(false);
+            checkDiedInDisaster.setSelected(false);
         } else {
-            radioDiedInDisaster.setSelected(true);
+            checkDiedInDisaster.setSelected(true);
             diedAmountField.setText(Integer.toString(dispChoice.getDead_amount()));
         }
 
 
         if (dispChoice.getPeople_amount() == 0) {
-            radioPeopleAmount.setSelected(false);
+            checkPeopleAmount.setSelected(false);
         } else {
-            radioPeopleAmount.setSelected(true);
+            checkPeopleAmount.setSelected(true);
             peopleAmountField.setText(Integer.toString(dispChoice.getPeople_amount()));
         }
         //заблокировать старый функционал
         peopleAmountField.setEditable(false);
         diedAmountField.setEditable(false);
-        radioDiedInDisaster.setDisable(true);
-        radioPeopleAmount.setDisable(true);
+        checkDiedInDisaster.setDisable(true);
+        checkPeopleAmount.setDisable(true);
     }
 
     public void preLoadStage4() {
@@ -482,6 +491,9 @@ public class ReportController {
                     //реагирование окончено
                     stage5Load();
                     break;
+            }
+            if (dispChoice.getDispatcher_id() != ServiceSingleton.getInstance().getCurrentUserId()) {
+                blockAllButtons();
             }
         }
     }
@@ -656,5 +668,25 @@ public class ReportController {
         firstWindowSupport.setVisible(true);
     }
 
-
+    // Сделать весь функционал недоступным
+    public void blockAllButtons() {
+        //window 1
+        charChoiceBox.setDisable(true);
+        kindComboBox.setDisable(true);
+        districtsChoiceBox.setDisable(true);
+        allServicesList.setDisable(true);
+        btnCleanServices.setDisable(true);
+        //window2
+        checkDiedInDisaster.setDisable(true);
+        checkPeopleAmount.setDisable(true);
+        peopleAmountField.setDisable(true);
+        diedAmountField.setDisable(true);
+        btnCleanNewServices.setDisable(true);
+        otherServicesList.setDisable(true);
+        //отключить все кнопки
+        buttonConfirmServices.setDisable(true);
+        buttonCallOtherServices.setDisable(true);
+        buttonConfirmReceivedData.setDisable(true);
+        buttonConfirmEndReacting.setDisable(true);
+    }
 }

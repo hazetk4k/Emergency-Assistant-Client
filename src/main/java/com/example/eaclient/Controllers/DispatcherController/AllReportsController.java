@@ -108,6 +108,7 @@ public class AllReportsController implements Initializable {
         stage.close();
         WebSocketClient.getInstance().disconnect();
         ServiceSingleton.getInstance().setCurrentUser(null);
+        ServiceSingleton.getInstance().setCurrentUserId(-1);
     }
 
     ObservableList<AllReportsTable> initialData() {

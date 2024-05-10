@@ -8,6 +8,8 @@ public class ServiceSingleton {
     private Boolean ifClosed = true;
     private String CurrentUser;
 
+    private int CurrentUserId;
+
     private AllReportsController allReportsController;
 
     public static ServiceSingleton getInstance() {
@@ -31,6 +33,14 @@ public class ServiceSingleton {
 
     public void setCurrentUser(String currentUser) {
         CurrentUser = currentUser;
+    }
+
+    public int getCurrentUserId() {
+        return CurrentUserId;
+    }
+
+    public void setCurrentUserId(int currentUserId) {
+        CurrentUserId = currentUserId;
     }
 
     public void setAllReportsController(AllReportsController allReportsController) {

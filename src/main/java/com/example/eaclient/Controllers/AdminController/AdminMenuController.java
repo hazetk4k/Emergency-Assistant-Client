@@ -43,6 +43,8 @@ public class AdminMenuController implements Initializable {
         ServiceSingleton.getInstance().setIfClosed(true);
         Stage stage = (Stage) btnBackToAuth.getScene().getWindow();
         stage.close();
+        ServiceSingleton.getInstance().setCurrentUser(null);
+        ServiceSingleton.getInstance().setCurrentUserId(-1);
     }
 
     public void openUserOptions() {

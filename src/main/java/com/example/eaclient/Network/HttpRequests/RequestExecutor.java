@@ -9,7 +9,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class RequestExecutor {
-    //TODO:Завернуть все в поток? ExecutorService
     public static HttpResponse executeRequest(String urlString, String method, String requestBody) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn;

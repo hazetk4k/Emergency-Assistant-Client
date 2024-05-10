@@ -1,7 +1,6 @@
 package com.example.eaclient.Models;
 
 public class DispChoice {
-    //TODO:Добавить все поля
     public String name_char;
     public String name_kind;
     public String services;
