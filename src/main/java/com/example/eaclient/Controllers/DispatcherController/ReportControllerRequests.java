@@ -1,10 +1,10 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
-import com.example.eaclient.Models.Applicant;
-import com.example.eaclient.Models.DataReportApplicant;
-import com.example.eaclient.Models.DispChoice;
-import com.example.eaclient.Models.Report;
-import com.example.eaclient.Models.ReportApplicant;
+import com.example.eaclient.Models.ReportWindowModels.Applicant;
+import com.example.eaclient.Models.ReportWindowModels.DataReportApplicant;
+import com.example.eaclient.Models.ReportWindowModels.DispChoice;
+import com.example.eaclient.Models.ReportWindowModels.Report;
+import com.example.eaclient.Models.ReportWindowModels.ReportApplicant;
 import com.example.eaclient.Network.HttpRequests.HttpResponse;
 import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.google.gson.Gson;

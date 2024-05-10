@@ -1,6 +1,6 @@
 package com.example.eaclient.Controllers.AdminController;
 
-import com.example.eaclient.Models.SystemUser;
+import com.example.eaclient.Models.AdminModels.SystemUser;
 import com.example.eaclient.Network.HttpRequests.HttpResponse;
 import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.example.eaclient.Service.ServiceSingleton;

@@ -1,4 +1,4 @@
-package com.example.eaclient.Models;
+package com.example.eaclient.Models.AdminModels;
 
 public class SystemUser {
     public  Integer id_syst;

@@ -1,6 +1,6 @@
 package com.example.eaclient.Controllers.AdminController;
 
-import com.example.eaclient.Models.TypeEm;
+import com.example.eaclient.Models.AdminModels.TypeEm;
 import com.example.eaclient.Network.HttpRequests.HttpResponse;
 import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.google.gson.Gson;

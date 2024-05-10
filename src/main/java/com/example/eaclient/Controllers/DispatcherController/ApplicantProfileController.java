@@ -1,6 +1,6 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
-import com.example.eaclient.Models.Applicant;
+import com.example.eaclient.Models.ReportWindowModels.Applicant;
 import javafx.scene.control.TextField;
 
 public class ApplicantProfileController {

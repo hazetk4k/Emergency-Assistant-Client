@@ -1,7 +1,8 @@
 package com.example.eaclient.Service;
 
 import com.example.eaclient.Controllers.DispatcherController.AllReportsController;
-import com.example.eaclient.Models.AllReportsTable;
+import com.example.eaclient.Models.ReportTableModels.AllReportsTable;
+import com.example.eaclient.Models.ReportTableModels.UpdateStageModel;
 
 public class ServiceSingleton {
     static ServiceSingleton INSTANCE;
@@ -47,11 +48,16 @@ public class ServiceSingleton {
         this.allReportsController = allReportsController;
     }
 
-    public void deliverDataToController(AllReportsTable newData) {
+    public void deliverNewReportToController(AllReportsTable newData) {
         if (allReportsController != null) {
             allReportsController.updateTableWithData(newData);
         }
     }
 
+    public void deliverNewStageToController(UpdateStageModel newData) {
+        if (allReportsController != null) {
+            allReportsController.updateTableReportStatus(newData);
+        }
+    }
 
 }

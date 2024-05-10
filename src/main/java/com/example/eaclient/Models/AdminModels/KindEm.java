@@ -1,4 +1,4 @@
-package com.example.eaclient.Models;
+package com.example.eaclient.Models.AdminModels;
 
 public class KindEm {
     public Integer kind_id;

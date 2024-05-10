@@ -17,11 +17,13 @@ module com.example.eaclient {
 
     exports com.example.eaclient;
     exports com.example.eaclient.Controllers;
-    exports com.example.eaclient.Models;
     exports com.example.eaclient.Controllers.AdminController;
     exports com.example.eaclient.Controllers.DispatcherController;
     exports com.example.eaclient.Network.HttpRequests;
     exports com.example.eaclient.Network.WebSocket;
+    exports com.example.eaclient.Models.ReportTableModels;
+    exports com.example.eaclient.Models.ReportWindowModels;
+    exports com.example.eaclient.Models.AdminModels;
 
 
 }

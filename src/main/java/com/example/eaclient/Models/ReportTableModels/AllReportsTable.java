@@ -1,4 +1,4 @@
-package com.example.eaclient.Models;
+package com.example.eaclient.Models.ReportTableModels;
 
 public class AllReportsTable {
     public int id;
@@ -6,7 +6,7 @@ public class AllReportsTable {
     public String timestamp;
     public String place;
     public String fio;
-    public Boolean wasSeen;
+    public String stage_name;
 
     public String getType() {
         return type;
@@ -32,10 +32,6 @@ public class AllReportsTable {
         this.place = place;
     }
 
-    public Boolean getWasSeen() {
-        return wasSeen;
-    }
-
     public String getFio() {
         return fio;
     }
@@ -44,8 +40,12 @@ public class AllReportsTable {
         this.fio = fio;
     }
 
-    public void setWasSeen(Boolean wasSeen) {
-        this.wasSeen = wasSeen;
+    public String getStage_name() {
+        return stage_name;
+    }
+
+    public void setStage_name(String stage_name) {
+        this.stage_name = stage_name;
     }
 
     public int getId() {
@@ -56,17 +56,17 @@ public class AllReportsTable {
         this.id = id;
     }
 
-    public AllReportsTable(int id, String type, String timestamp, String place, String fio, Boolean wasSeen) {
+    public AllReportsTable(int id, String type, String timestamp, String place, String fio, String stage_name) {
         this.id = id;
         this.type = type;
         this.timestamp = timestamp;
         this.place = place;
         this.fio = fio;
-        this.wasSeen = wasSeen;
+        this.stage_name = stage_name;
     }
 
     @Override
     public String toString() {
-        return "id: " + id + ", type: " + type + ", timestamp: " + timestamp + ", place: " + place + ", FIO: " + fio + ", Просмотрено: " + wasSeen;
+        return "id: " + id + ", type: " + type + ", timestamp: " + timestamp + ", place: " + place + ", FIO: " + fio + ", Просмотрено: " + stage_name;
     }
 }

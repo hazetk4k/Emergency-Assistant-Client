@@ -17,7 +17,7 @@
             <TableColumn fx:id="timestamp" prefWidth="126.4000244140625" text="Дата и время" />
             <TableColumn id="d" fx:id="place" prefWidth="164.79995727539062" text="Место происшествия" />
             <TableColumn fx:id="fio" prefWidth="92.7999267578125" text="Заявитель" />
-            <TableColumn fx:id="wasSeen" prefWidth="75.0" text="Статус" />
+            <TableColumn fx:id="stage_name" prefWidth="75.0" text="Статус" />
         </columns>
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

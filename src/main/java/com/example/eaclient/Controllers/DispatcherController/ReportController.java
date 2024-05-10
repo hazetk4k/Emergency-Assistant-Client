@@ -1,13 +1,12 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
 import com.example.eaclient.Controllers.WindowManager;
-import com.example.eaclient.Models.AllReportsTable;
-import com.example.eaclient.Models.Applicant;
-import com.example.eaclient.Models.DispChoice;
-import com.example.eaclient.Models.Report;
-import com.example.eaclient.Models.ReportApplicant;
+import com.example.eaclient.Models.ReportTableModels.AllReportsTable;
+import com.example.eaclient.Models.ReportWindowModels.Applicant;
+import com.example.eaclient.Models.ReportWindowModels.DispChoice;
+import com.example.eaclient.Models.ReportWindowModels.Report;
+import com.example.eaclient.Models.ReportWindowModels.ReportApplicant;
 import com.example.eaclient.Service.ServiceSingleton;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -257,6 +255,8 @@ public class ReportController {
     }
 
     public void confirmEndReacting(ActionEvent actionEvent) {
+        vboxAdditionalServicesCalling.setStyle("");
+        buttonConfirmEndReacting.setStyle("");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("report_id", reportTableData.getId());
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -321,7 +321,7 @@ public class ReportController {
         }
         otherServicesList.getItems().clear();
         otherServicesList.getItems().addAll(checkBoxList);
-        System.out.println("Установка выбранных служб, dispchoice:" + dispChoice.getServices());
+
 //        chosenServicesArea.setText(dispChoice.getServices());
 
         //установка слушателей

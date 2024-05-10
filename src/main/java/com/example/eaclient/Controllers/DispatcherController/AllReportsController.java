@@ -1,7 +1,8 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
 import com.example.eaclient.Controllers.WindowManager;
-import com.example.eaclient.Models.AllReportsTable;
+import com.example.eaclient.Models.ReportTableModels.AllReportsTable;
+import com.example.eaclient.Models.ReportTableModels.UpdateStageModel;
 import com.example.eaclient.Network.HttpRequests.HttpResponse;
 import com.example.eaclient.Network.HttpRequests.SimpleRequestManager;
 import com.example.eaclient.Network.WebSocket.WebSocketClient;
@@ -56,7 +57,7 @@ public class AllReportsController implements Initializable {
     @FXML
     public TableColumn<AllReportsTable, String> fio;
     @FXML
-    public TableColumn<AllReportsTable, Boolean> wasSeen;
+    public TableColumn<AllReportsTable, String> stage_name;
     @FXML
     public Button toReportsListButton;
     @FXML
@@ -101,6 +102,18 @@ public class AllReportsController implements Initializable {
         });
     }
 
+    public void updateTableReportStatus(UpdateStageModel newData) {
+        Platform.runLater(() -> {
+            for (AllReportsTable item : tableView.getItems()) {
+                if (item.getId() == newData.getReport_id()) {
+                    item.setStage_name(newData.getStage_name());
+                    tableView.refresh();
+                    return;
+                }
+            }
+        });
+    }
+
     public void toAuthWindow() throws IOException {
         manager.openFxmlScene("/fxml/AuthWindow.fxml", "Авторизация");
         ServiceSingleton.getInstance().setIfClosed(true);
@@ -142,13 +155,12 @@ public class AllReportsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ServiceSingleton.getInstance().setAllReportsController(this);
 
-        id.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Integer>("id"));
-        type.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("type"));
-        timestamp.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("timestamp"));
-        place.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("place"));
-        fio.setCellValueFactory(new PropertyValueFactory<AllReportsTable, String>("fio"));
-        wasSeen.setCellValueFactory(new PropertyValueFactory<AllReportsTable, Boolean>("wasSeen"));
-
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        type.setCellValueFactory(new PropertyValueFactory<>("type"));
+        timestamp.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+        place.setCellValueFactory(new PropertyValueFactory<>("place"));
+        fio.setCellValueFactory(new PropertyValueFactory<>("fio"));
+        stage_name.setCellValueFactory(new PropertyValueFactory<>("stage_name"));
         tableView.setItems(initialData());
 
         try {
@@ -157,18 +169,33 @@ public class AllReportsController implements Initializable {
             System.err.println(e.getMessage());
         }
 
-        wasSeen.setCellFactory(column -> new TableCell<AllReportsTable, Boolean>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item ? "Действия предприняты" : "Новое");
-                    setTextFill(item ? Color.GREEN : Color.RED);
+        stage_name.setCellFactory(column -> {
+            return new TableCell<AllReportsTable, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        switch (item) {
+                            case "Новое заявление":
+                                setTextFill(Color.RED);
+                                break;
+                            case "Начало реагирования":
+                                setTextFill(Color.BLUE);
+                                break;
+                            case "Действия завершены":
+                                setTextFill(Color.GREEN);
+                                break;
+                            default:
+                                setTextFill(Color.BLACK);
+                                break;
+                        }
+                    }
                 }
-            }
+            };
         });
 
         tableView.setOnMouseClicked(event -> {
@@ -192,7 +219,18 @@ public class AllReportsController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
+
+    public AllReportsTable findItemById(int id) {
+        for (AllReportsTable item : tableView.getItems()) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+
 }

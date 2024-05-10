@@ -1,4 +1,4 @@
-package com.example.eaclient.Models;
+package com.example.eaclient.Models.ReportWindowModels;
 
 public class DispChoice {
     public String name_char;
