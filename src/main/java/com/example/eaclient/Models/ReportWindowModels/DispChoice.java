@@ -10,6 +10,8 @@ public class DispChoice {
     public String additional_services;
     public String stage;
 
+    public String district_name;
+
     public String getName_char() {
         return name_char;
     }
@@ -42,7 +44,11 @@ public class DispChoice {
         return stage;
     }
 
-    public DispChoice(String name_char, String name_kind, String services, int dead_amount, int people_amount, int dispatcher_id, String additional_services, String stage) {
+    public String getDistrict_name() {
+        return district_name;
+    }
+
+    public DispChoice(String name_char, String name_kind, String services, int dead_amount, int people_amount, int dispatcher_id, String additional_services, String stage, String district_name) {
         this.name_char = name_char;
         this.name_kind = name_kind;
         this.services = services;
@@ -51,5 +57,6 @@ public class DispChoice {
         this.dispatcher_id = dispatcher_id;
         this.additional_services = additional_services;
         this.stage = stage;
+        this.district_name = district_name;
     }
 }

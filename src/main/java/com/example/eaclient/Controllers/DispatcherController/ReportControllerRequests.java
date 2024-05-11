@@ -42,7 +42,7 @@ public class ReportControllerRequests {
         return reportApplicantData;
     }
 
-    public Map<String, List<String>> loadCharsAndServicesData() {
+    public Map<String, List<String>> loadCharsServicesDistrictsData() {
         Map<String, List<String>> emergencyData = new HashMap<>();
         try {
             HttpResponse response = SimpleRequestManager.sendGetRequest("/set-up-emergency-data");

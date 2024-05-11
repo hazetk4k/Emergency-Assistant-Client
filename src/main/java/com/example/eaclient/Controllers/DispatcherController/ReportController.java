@@ -137,22 +137,24 @@ public class ReportController {
     public void initData(AllReportsTable rowData) {
         this.reportTableData = rowData;
         loadReportApplicantData();
-        loadCharsAndServices();
+        loadCharsServicesDistricts();
         loadChoicesStage();
-        //TODO:ДОДЕЛАТЬ ЭТИ РАЙОНЫ
-//        districtsChoiceBox.getItems().addAll("Район 1", "Район 2", "Район 3");
-//        Tooltip.install(districtsChoiceBox, setToolTip("Выберите район"));
     }
 
     //кнопки подтверждения выбора
     public void confirmStartReacting(ActionEvent actionEvent) {
         if (charChoiceBox.getValue() == null) {
-            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле характра ЧС", 2);
+            WindowManager.showAlert("Не заполнены данные", "Необходимо выбрать характер происшествия", 2);
             return;
         }
 
         if (kindComboBox.getValue() == null) {
-            WindowManager.showAlert("Не заполнены данные", "Необходимо заполнить поле вида ЧС", 2);
+            WindowManager.showAlert("Не заполнены данные", "Необходимо выбрать вид происшествия или ввести новый", 2);
+            return;
+        }
+
+        if(districtsChoiceBox.getValue() == null){
+            WindowManager.showAlert("Не заполнены данные", "Необходимо выбрать район, к которому относится место происшествия", 2);
             return;
         }
 
@@ -164,6 +166,7 @@ public class ReportController {
         jsonObject.addProperty("disp_login", ServiceSingleton.getInstance().getCurrentUser());
         jsonObject.addProperty("char_name", charChoiceBox.getValue());
         jsonObject.addProperty("kind_name", kindComboBox.getValue());
+        jsonObject.addProperty("district_name", districtsChoiceBox.getValue());
 
         int flag = requestsManager.confirmStage(jsonObject, "/start-action-time");
 
@@ -256,7 +259,7 @@ public class ReportController {
 
     public void confirmEndReacting(ActionEvent actionEvent) {
         vboxAdditionalServicesCalling.setStyle("");
-        buttonConfirmEndReacting.setStyle("");
+        buttonConfirmEndReacting.setStyle("-fx-background-color: #1e2f56;");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("report_id", reportTableData.getId());
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -277,22 +280,24 @@ public class ReportController {
         charChoiceBox.setValue(dispChoice.getName_char());
         kindComboBox.setValue(dispChoice.getName_kind());
         loadRecommendedServices(dispChoice.getName_kind());
+        districtsChoiceBox.setValue(dispChoice.getDistrict_name());
 
         // отключить старые элементы
         charChoiceBox.setDisable(true);
         buttonStartReacting.setDisable(true);
         kindComboBox.setDisable(true);
+        districtsChoiceBox.setDisable(true);
 
         //убрать старые подсказки
-        vboxConfirmStartReaction.setStyle("");
-        buttonStartReacting.setStyle("");
+        vboxConfirmStartReaction.setStyle("-fx-background-color: #aed2ca;");
+        buttonStartReacting.setStyle("-fx-background-color: #1e2f56;");
 
     }
 
     public void preLoadStage2() {
         //установка подказок
         vboxConfirmChosenServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonConfirmServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmServices.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
         buttonConfirmServices.setDisable(false);
     }
 
@@ -302,7 +307,7 @@ public class ReportController {
         buttonNextWindow.setDisable(false);
         //убрать подсказки
         vboxConfirmChosenServices.setStyle("");
-        buttonConfirmServices.setStyle("");
+        buttonConfirmServices.setStyle("-fx-background-color: #1e2f56;");
         buttonConfirmServices.setDisable(true);
         //установка уже выбранных значений
         recommendedServicesList2.getItems().clear();
@@ -322,7 +327,6 @@ public class ReportController {
         otherServicesList.getItems().clear();
         otherServicesList.getItems().addAll(checkBoxList);
 
-//        chosenServicesArea.setText(dispChoice.getServices());
 
         //установка слушателей
         setUpServices(otherChosenServicesArea, checkBoxList);
@@ -343,6 +347,7 @@ public class ReportController {
             casualtiesField2.setText("Отсутствуют");
         }
         //TODO: Дополнить адрес районом
+        districtField.setText("Район");
         placeField2.setText(report.getPlace());
         String user_in_danger;
         districtField.setText(dispChoice.getStage());
@@ -390,9 +395,9 @@ public class ReportController {
     public void preLoadStage3() {
         //установка подсказок
         buttonConfirmReceivedData.setDisable(false);
-        buttonNextWindow.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        vboxRecievedData.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonConfirmReceivedData.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonNextWindow.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
+        vboxRecievedData.setStyle("-fx-background-color: #aed2ca; -fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmReceivedData.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
     }
 
     public void stage3Load() {
@@ -400,9 +405,9 @@ public class ReportController {
 
         //Убрать подсказки
         buttonConfirmReceivedData.setDisable(true);
-        buttonNextWindow.setStyle("");
-        vboxRecievedData.setStyle("");
-        buttonConfirmReceivedData.setStyle("");
+        buttonNextWindow.setStyle("-fx-background-color: #1e2f56;");
+        vboxRecievedData.setStyle("-fx-background-color: #aed2ca;");
+        buttonConfirmReceivedData.setStyle("-fx-background-color: #1e2f56;");
 
         //установить значения
         if (dispChoice.getDead_amount() == 0) {
@@ -428,14 +433,14 @@ public class ReportController {
 
     public void preLoadStage4() {
         vboxAdditionalServicesCalling.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-        buttonCallOtherServices.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonCallOtherServices.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
         buttonCallOtherServices.setDisable(false);
     }
 
     public void stage4Load() {
         stage3Load();
         //убрать подсказки
-        buttonCallOtherServices.setStyle("");
+        buttonCallOtherServices.setStyle("-fx-background-color: #1e2f56;");
         // загрузка данных
         setUpChosenServices(otherServicesList, dispChoice.getAdditional_services());
         otherChosenServicesArea.setText(dispChoice.getAdditional_services());
@@ -448,13 +453,13 @@ public class ReportController {
 
     public void preLoadStage5() {
         buttonConfirmEndReacting.setDisable(false);
-        buttonConfirmEndReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+        buttonConfirmEndReacting.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
     }
 
     public void stage5Load() { //пользователь закончил реагирование на чс
         stage4Load();
         //TODO:Получение отчета
-        buttonConfirmEndReacting.setStyle("");
+        buttonConfirmEndReacting.setStyle("-fx-background-color: #1e2f56;");
         buttonConfirmEndReacting.setDisable(true);
     }
 
@@ -463,8 +468,8 @@ public class ReportController {
         dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
         if (dispChoice == null || Objects.equals(dispChoice.getStage(), "0")) {
             loadTypeKindChar();
-            vboxConfirmStartReaction.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
-            buttonStartReacting.setStyle("-fx-border-color: #0cc715; -fx-border-width: 3;");
+            vboxConfirmStartReaction.setStyle("-fx-background-color: #aed2ca; -fx-border-color: #0cc715; -fx-border-width: 3;");
+            buttonStartReacting.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
         } else {
             switch (dispChoice.getStage()) {
                 case "1":
@@ -523,10 +528,15 @@ public class ReportController {
         }
     }
 
-    public void loadCharsAndServices() {
-        Map<String, List<String>> emergencyData = requestsManager.loadCharsAndServicesData();
+    public void loadCharsServicesDistricts() {
+        Map<String, List<String>> emergencyData = requestsManager.loadCharsServicesDistrictsData();
         chars = emergencyData.get("chars");
         services = emergencyData.get("services");
+        List<String> districts = emergencyData.get("districts");
+
+        districtsChoiceBox.getItems().clear();
+        districtsChoiceBox.getItems().addAll(districts);
+        Tooltip.install(districtsChoiceBox, setToolTip("Выберите район"));
 
         List<CheckBox> checkBoxList = new ArrayList<>();
         for (String service : services) {
@@ -543,6 +553,7 @@ public class ReportController {
         Map<String, String> map = requestsManager.loadKindCharByType(type);
         if (map == null) {
             charChoiceBox.getItems().addAll(chars);
+            Tooltip.install(charChoiceBox, setToolTip("Выберите Характер происшествия"));
             charChoiceBox.setOnAction(event -> {
                 kindComboBox.getItems().clear();
                 List<String> listOfKinds;
@@ -551,6 +562,7 @@ public class ReportController {
                     listOfKinds = requestsManager.loadKindsOfChar(selectedValue);
                     assert listOfKinds != null;
                     kindComboBox.getItems().addAll(listOfKinds);
+                    Tooltip.install(charChoiceBox, setToolTip("Выберите вид происшествия"));
                     kindComboBox.setDisable(false);
                 }
             });

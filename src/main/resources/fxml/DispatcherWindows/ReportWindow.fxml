@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="682.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportController">
    <VBox fx:id="firstWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-      <Label styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений">
+      <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
          <font>
             <Font name="Arial Bold" size="16.0" />
          </font>
@@ -27,7 +27,7 @@
       </Label>
       <Separator />
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <VBox fx:id="vboxConfirmStartReaction" alignment="TOP_CENTER" prefHeight="634.0" prefWidth="407.0" HBox.hgrow="ALWAYS">
+         <VBox fx:id="vboxConfirmStartReaction" alignment="TOP_CENTER" prefHeight="655.0" prefWidth="451.0" style="-fx-background-color: #aed2ca;" HBox.hgrow="ALWAYS">
             <Label styleClass="bold-white-label" text="1. Определение характеристик ЧС" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="Arial Bold" size="14.0" />
@@ -36,13 +36,13 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Label>
-            <Separator prefWidth="200.0">
+            <Separator prefWidth="200.0" style="-fx-background-color: #aed2ca;">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
             <VBox VBox.vgrow="ALWAYS">
-               <Label maxWidth="-Infinity" text="Тип происшествия, указанный заявителем:">
+               <Label maxWidth="-Infinity" text="Тип происшествия, указанный заявителем:" textFill="#1e2f56">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -64,7 +64,7 @@
                      <Font name="Arial" size="14.0" />
                   </font>
                </TextField>
-               <Label maxWidth="-Infinity" text="Характер происшествия:">
+               <Label maxWidth="-Infinity" text="Характер происшествия:" textFill="#1e2f56">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -83,7 +83,7 @@
                      <Insets left="10.0" right="10.0" />
                   </VBox.margin>
                </ChoiceBox>
-               <Label text="Вид происшествия:" wrapText="true">
+               <Label text="Вид происшествия:" textFill="#1e2f56" wrapText="true">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -110,7 +110,7 @@
             </Separator>
             <VBox VBox.vgrow="ALWAYS">
                <VBox prefHeight="245.0" prefWidth="54.0" VBox.vgrow="ALWAYS">
-                  <Label maxWidth="1.7976931348623157E308" styleClass="bold-white-label" text="Дополнительные сведения, предоставленнные заявителем:" wrapText="true" VBox.vgrow="ALWAYS">
+                  <Label maxWidth="1.7976931348623157E308" prefWidth="387.0" styleClass="bold-white-label" text="Дополнительные сведения, предоставленнные заявителем:" textFill="#1e2f56" wrapText="true" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
@@ -138,7 +138,7 @@
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
                </Separator>
-               <Label styleClass="bold-white-label" text="Дата и время возникновения происшествия:">
+               <Label styleClass="bold-white-label" text="Дата и время возникновения происшествия:" textFill="#1e2f56">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -160,7 +160,7 @@
                      <Font name="Arial" size="14.0" />
                   </font>
                </TextField>
-               <Label text="Указанный заявителем адрес места происшествия:">
+               <Label text="Указанный заявителем адрес места происшествия:" textFill="#1e2f56">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -192,7 +192,7 @@
                </padding>
             </Separator>
             <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
-               <Label maxHeight="-Infinity" maxWidth="-Infinity" styleClass="bold-white-label" text="Заявитель:">
+               <Label maxHeight="-Infinity" maxWidth="-Infinity" styleClass="bold-white-label" text="Заявитель:" textFill="#1e2f56">
                   <padding>
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                   </padding>
@@ -214,9 +214,9 @@
                      <Font name="Arial" size="14.0" />
                   </font>
                </TextField>
-               <Button fx:id="buttonOpenApplicantProfile" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openApplicantProfile" text="Открыть профиль заявителя 👤" VBox.vgrow="ALWAYS">
+               <Button fx:id="buttonOpenApplicantProfile" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openApplicantProfile" style="-fx-background-color: #1e2f56;" text="Открыть профиль заявителя 👤" textFill="WHITE" VBox.vgrow="ALWAYS">
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <VBox.margin>
                      <Insets left="10.0" right="10.0" />
@@ -235,7 +235,7 @@
                      <Insets top="5.0" />
                   </VBox.margin>
                   <VBox prefHeight="107.0" prefWidth="154.0">
-                     <Label styleClass="bold-white-label" text="Пострадавшие:">
+                     <Label styleClass="bold-white-label" text="Пострадавшие:" textFill="#1e2f56">
                         <font>
                            <Font name="Arial" size="14.0" />
                         </font>
@@ -246,7 +246,7 @@
                            <Insets bottom="5.0" left="10.0" />
                         </VBox.margin>
                      </Label>
-                     <Label styleClass="bold-white-label" text="Статус заявителя:">
+                     <Label styleClass="bold-white-label" text="Статус заявителя:" textFill="#1e2f56">
                         <padding>
                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </padding>
@@ -287,15 +287,15 @@
                   </VBox>
                </HBox>
             </VBox>
-            <Button fx:id="buttonStartReacting" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmStartReacting" text="Подтвердить получение данных о ЧС ✔" VBox.vgrow="ALWAYS">
+            <Button fx:id="buttonStartReacting" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmStartReacting" style="-fx-background-color: #1e2f56;" text="Подтвердить получение данных о ЧС ✔" textFill="WHITE" VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
                <VBox.margin>
-                  <Insets bottom="5.0" left="10.0" right="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
                <font>
-                  <Font name="Arial" size="14.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
             </Button>
          </VBox>
@@ -315,7 +315,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
-            <Label maxWidth="1.7976931348623157E308" text="Рекомендуется направить следующие службы ЧС:" VBox.vgrow="ALWAYS">
+            <Label maxWidth="1.7976931348623157E308" text="Рекомендуется направить следующие службы ЧС:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="Arial" size="14.0" />
                </font>
@@ -336,9 +336,9 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Выберите, какие службы следует направить:">
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Выберите, какие службы следует направить:" textFill="#1e2f56">
                <font>
-                  <Font name="Arial Italic" size="14.0" />
+                  <Font name="Arial Bold Italic" size="14.0" />
                </font>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -352,7 +352,7 @@
                   <Insets bottom="5.0" left="10.0" right="10.0" />
                </VBox.margin>
             </ListView>
-            <Button fx:id="btnCleanServices" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cleanUpServices" styleClass="buttons" text="Очистить выбор 🔄">
+            <Button fx:id="btnCleanServices" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cleanUpServices" style="-fx-background-color: #1e2f56;" styleClass="buttons" text="Очистить выбор 🔄" textFill="WHITE">
                <VBox.margin>
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
@@ -360,7 +360,7 @@
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                </padding>
                <font>
-                  <Font name="Arial" size="14.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
             </Button>
             <Separator prefWidth="200.0">
@@ -368,7 +368,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
-            <Label maxWidth="1.7976931348623157E308" text="Будут вызваны следующие службы реагирования:">
+            <Label maxWidth="1.7976931348623157E308" text="Будут вызваны следующие службы реагирования:" textFill="#1e2f56">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
@@ -391,26 +391,26 @@
                </font>
             </TextArea>
             <HBox>
-               <Button fx:id="buttonConfirmServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmChosenServices" text="Подтвердить вызов служб реагирования ✔" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonConfirmServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmChosenServices" style="-fx-background-color: #1e2f56;" text="Подтвердить вызов служб реагирования ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <HBox.margin>
-                     <Insets bottom="5.0" left="10.0" right="10.0" />
+                     <Insets bottom="10.0" left="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
-               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveToNextWindow" text="Перейти к следующим действиям ►" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveToNextWindow" style="-fx-background-color: #1e2f56;" text="Перейти к следующим действиям ►" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <HBox.margin>
-                     <Insets bottom="5.0" right="10.0" />
+                     <Insets bottom="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
             </HBox>
@@ -418,7 +418,7 @@
       </HBox>
    </VBox>
    <VBox fx:id="secondWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
-      <Label styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений">
+      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений" textFill="WHITE" VBox.vgrow="ALWAYS">
          <font>
             <Font name="Arial Bold" size="16.0" />
          </font>
@@ -428,14 +428,14 @@
       </Label>
       <Separator />
       <HBox VBox.vgrow="ALWAYS">
-         <VBox fx:id="vboxRecievedData" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+         <VBox fx:id="vboxRecievedData" alignment="TOP_CENTER" style="-fx-background-color: #aed2ca;" HBox.hgrow="ALWAYS">
             <Label styleClass="bold-white-label" text="3. Передача данных службам по рации:">
                <font>
                   <Font name="Arial Bold" size="14.0" />
                </font>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
             </Label>
             <Separator prefWidth="200.0">
                <padding>
@@ -444,17 +444,17 @@
             </Separator>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <VBox maxWidth="1.7976931348623157E308" spacing="15.0">
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Характер происшествия:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Характер происшествия:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Вид происшествия:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Вид происшествия:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Тип происшествия:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Тип происшествия:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
@@ -497,27 +497,27 @@
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Место происшествия:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Место происшествия:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Район происшествия:">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Район происшествия:" textFill="#1e2f56">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Дата и время происшествия:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Дата и время происшествия:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Количество пострадавших:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Количество пострадавших:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Статус заявителя:" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Статус заявителя:" textFill="#1e2f56" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
@@ -559,7 +559,7 @@
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
             </Separator>
-            <Label maxWidth="1.7976931348623157E308" text="Дополнительные сведения от заявителя:">
+            <Label maxWidth="1.7976931348623157E308" text="Дополнительные сведения от заявителя:" textFill="#1e2f56">
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" right="10.0" />
                </VBox.margin>
@@ -580,9 +580,9 @@
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
             </Separator>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Запросите следующую информацию у вызванных служб:">
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Запросите следующую информацию у вызванных служб:" textFill="#1e2f56">
                <font>
-                  <Font name="Arial Italic" size="14.0" />
+                  <Font name="Arial Bold Italic" size="14.0" />
                </font>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -600,12 +600,12 @@
                   <padding>
                      <Insets right="10.0" />
                   </padding>
-                  <CheckBox fx:id="checkPeopleAmount" mnemonicParsing="false" text="Люди на месте происшествия">
+                  <CheckBox fx:id="checkPeopleAmount" mnemonicParsing="false" text="Люди на месте происшествия" textFill="#1e2f56">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="checkDiedInDisaster" mnemonicParsing="false" text="Погибшие">
+                  <CheckBox fx:id="checkDiedInDisaster" mnemonicParsing="false" text="Погибшие" textFill="#1e2f56">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
@@ -638,26 +638,26 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Button fx:id="buttonFirstWindow" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openFirstWindow" text="◄ На предыдущее окно" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonFirstWindow" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openFirstWindow" style="-fx-background-color: #1e2f56;" text="◄ На предыдущее окно" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <HBox.margin>
-                     <Insets bottom="5.0" left="10.0" right="10.0" />
+                     <Insets bottom="10.0" left="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
-               <Button fx:id="buttonConfirmReceivedData" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmReceivedData" text="Подтвердить полученные данные ✔" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonConfirmReceivedData" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmReceivedData" style="-fx-background-color: #1e2f56;" text="Подтвердить полученные данные ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <HBox.margin>
-                     <Insets bottom="5.0" right="10.0" />
+                     <Insets bottom="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
             </HBox>
@@ -669,16 +669,16 @@
                <font>
                   <Font name="Arial Bold" size="14.0" />
                </font>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
             </Label>
             <Separator prefWidth="200.0">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
-            <Label maxWidth="1.7976931348623157E308" text="Рекомендуется направить следующие службы ЧС:">
+            <Label maxWidth="1.7976931348623157E308" text="Рекомендуется направить следующие службы ЧС:" textFill="#1e2f56">
                <font>
                   <Font name="Arial" size="14.0" />
                </font>
@@ -700,9 +700,9 @@
                   </VBox.margin>
                </Separator>
             </VBox>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Выберите, какие дополнительные службы следует направить:">
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="need_to_be_done_label" text="Выберите, какие дополнительные службы следует направить:" textFill="#1e2f56">
                <font>
-                  <Font name="Arial Italic" size="14.0" />
+                  <Font name="Arial Bold Italic" size="14.0" />
                </font>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -715,12 +715,12 @@
                <VBox.margin>
                   <Insets left="10.0" right="10.0" />
                </VBox.margin></ListView>
-            <Button fx:id="btnCleanNewServices" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cleanUpNewServices" styleClass="buttons" text="Очистить выбор 🔄">
+            <Button fx:id="btnCleanNewServices" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cleanUpNewServices" style="-fx-background-color: #1e2f56;" styleClass="buttons" text="Очистить выбор 🔄" textFill="WHITE">
                <padding>
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                </padding>
                <font>
-                  <Font name="Arial" size="14.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
                <VBox.margin>
                   <Insets left="10.0" right="10.0" />
@@ -733,7 +733,7 @@
                   </VBox.margin>
                </Separator>
             </VBox>
-            <Label maxWidth="1.7976931348623157E308" text="Список дополнительных служб:">
+            <Label maxWidth="1.7976931348623157E308" text="Список дополнительных служб:" textFill="#1e2f56">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
@@ -752,26 +752,26 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding></TextArea>
             <HBox>
-               <Button fx:id="buttonCallOtherServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#callOtherServices" text="Вызвать дополнительные служб ✔" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonCallOtherServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#callOtherServices" style="-fx-background-color: #1e2f56;" text="Вызвать дополнительные служб ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <HBox.margin>
-                     <Insets bottom="5.0" left="10.0" right="10.0" />
+                     <Insets bottom="10.0" left="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
-               <Button fx:id="buttonConfirmEndReacting" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmEndReacting" text="Подтвердить завершение работ ✔" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonConfirmEndReacting" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmEndReacting" style="-fx-background-color: #1e2f56;" text="Подтвердить завершение работ ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <padding>
                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                   </padding>
                   <font>
-                     <Font name="Arial" size="14.0" />
+                     <Font name="Arial Bold" size="14.0" />
                   </font>
                   <HBox.margin>
-                     <Insets bottom="5.0" right="10.0" />
+                     <Insets bottom="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
             </HBox>

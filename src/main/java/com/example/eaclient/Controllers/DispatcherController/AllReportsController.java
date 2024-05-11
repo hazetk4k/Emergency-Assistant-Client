@@ -162,7 +162,6 @@ public class AllReportsController implements Initializable {
         fio.setCellValueFactory(new PropertyValueFactory<>("fio"));
         stage_name.setCellValueFactory(new PropertyValueFactory<>("stage_name"));
         tableView.setItems(initialData());
-
         try {
             WebSocketClient.getInstance().connect();
         } catch (Exception e) {
@@ -183,7 +182,7 @@ public class AllReportsController implements Initializable {
                             case "Новое заявление":
                                 setTextFill(Color.RED);
                                 break;
-                            case "Начало реагирования":
+                            case "Начало реагирования", "Реагирование в процессе":
                                 setTextFill(Color.BLUE);
                                 break;
                             case "Действия завершены":
@@ -193,6 +192,7 @@ public class AllReportsController implements Initializable {
                                 setTextFill(Color.BLACK);
                                 break;
                         }
+                        setFont(Font.font("System", FontWeight.BOLD, 12));
                     }
                 }
             };
@@ -222,15 +222,5 @@ public class AllReportsController implements Initializable {
             System.out.println(e.getMessage());
         }
     }
-
-    public AllReportsTable findItemById(int id) {
-        for (AllReportsTable item : tableView.getItems()) {
-            if (item.getId() == id) {
-                return item;
-            }
-        }
-        return null;
-    }
-
 
 }
