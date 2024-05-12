@@ -8,11 +8,13 @@ import com.example.eaclient.Models.ReportWindowModels.Report;
 import com.example.eaclient.Models.ReportWindowModels.ReportApplicant;
 import com.example.eaclient.Models.ReportWindowModels.ServiceTransportPair;
 import com.example.eaclient.Service.ServiceSingleton;
+import com.example.eaclient.Service.WordReportGenerator;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -136,6 +138,7 @@ public class ReportController {
     public TableColumn<ServiceTransportPair, String> otherChosenServiceColumn;
     @FXML
     public TableColumn<ServiceTransportPair, String> otherChosenServiceAutoColumn;
+    public Button buttonMakeReport;
     private List<ServiceTransportPair> serviceTransportPairs;
 
     private List<ServiceTransportPair> otherServiceTransportPairs;
@@ -146,8 +149,6 @@ public class ReportController {
     private List<String> listOfRecommendedServices;
     private List<String> chars;
     private List<String> services;
-
-    private boolean allowAdding = true;
 
     private final ReportControllerRequests requestsManager = new ReportControllerRequests();
 
@@ -334,7 +335,6 @@ public class ReportController {
     }
 
     public void stage2Load() {
-        allowAdding = false;
         recommendedServicesList.getItems().clear();
         stage1Load();
         buttonNextWindow.setDisable(false);
@@ -362,10 +362,10 @@ public class ReportController {
         otherServicesList.getItems().clear();
         otherServicesList.getItems().addAll(checkBoxList);
         //установка таблицы 1 + чекбоксы
+        tableChosenServices.setDisable(true);
         setUpChosenServices(allServicesList, chosenServicesList);
         tableChosenServices.getItems().clear();
         addRecordsFromString(tableChosenServices, chosenServices);
-        allowAdding = true;
         //установка слушателей второй таблицы
         otherServiceTransportPairs = new ArrayList<>();
         setCVFForChosenServiceColumn(otherChosenServiceColumn, otherChosenServiceAutoColumn);
@@ -476,12 +476,12 @@ public class ReportController {
     }
 
     public void stage4Load() {
-        allowAdding = false;
         stage3Load();
         //убрать подсказки
         buttonCallOtherServices.setStyle("-fx-background-color: #1e2f56;");
 
         // загрузка данных
+        tableOtherChosenServices.setDisable(true);
         String chosenServices = dispChoice.getAdditional_services();
         setUpChosenServices(otherServicesList, extractServiceNames(chosenServices));
         tableOtherChosenServices.getItems().clear();
@@ -504,6 +504,8 @@ public class ReportController {
         //TODO:Получение отчета
         buttonConfirmEndReacting.setStyle("-fx-background-color: #1e2f56;");
         buttonConfirmEndReacting.setDisable(true);
+        buttonMakeReport.setDisable(false);
+        buttonMakeReport.setVisible(true);
     }
 
 
@@ -814,11 +816,9 @@ public class ReportController {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
                     // Добавляем выбранную службу и пустой транспорт в таблицу
-                    if (allowAdding) {
-                        ServiceTransportPair pair = new ServiceTransportPair(checkBox.getText(), "");
-                        pairs.add(pair);
-                        chosenServicesTable.getItems().add(pair);
-                    }
+                    ServiceTransportPair pair = new ServiceTransportPair(checkBox.getText(), "");
+                    pairs.add(pair);
+                    chosenServicesTable.getItems().add(pair);
                 } else {
                     // Удаляем запись о выбранной службе из таблицы
                     ServiceTransportPair pairToRemove = null;
@@ -835,5 +835,10 @@ public class ReportController {
                 }
             });
         }
+    }
+
+    public void makeReport(ActionEvent actionEvent) {
+       WordReportGenerator word = new WordReportGenerator();
+       word.generateReport(reportTableData.getId(), report, applicant, dispChoice);
     }
 }

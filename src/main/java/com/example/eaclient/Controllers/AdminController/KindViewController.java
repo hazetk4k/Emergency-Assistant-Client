@@ -49,19 +49,6 @@ public class KindViewController {
 
     private final Gson gson = new Gson();
 
-//    private void showAlert(String title, String warning, int code) {
-//        Alert alert = null;
-//        if (code == 1) {
-//            alert = new Alert(Alert.AlertType.INFORMATION);
-//        } else if (code == 2) {
-//            alert = new Alert(Alert.AlertType.WARNING);
-//        }
-//        alert.setTitle(title);
-//        alert.setHeaderText(null);
-//        alert.setContentText(warning);
-//        alert.showAndWait();
-//    }
-
     ObservableList<KindEm> initialTableData() {
         ObservableList<KindEm> kindEmList = FXCollections.observableArrayList();
         try {
@@ -75,7 +62,6 @@ public class KindViewController {
                 List<KindEm> tempKindsList = gson.fromJson(responseBody, typeOfKinds);
 
                 kindEmList.addAll(tempKindsList);
-                System.out.println(tempKindsList);
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());

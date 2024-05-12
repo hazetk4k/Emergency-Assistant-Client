@@ -1,6 +1,7 @@
 package com.example.eaclient.Models.ReportWindowModels;
 
 public class DispChoice {
+    public int choice_id;
     public String name_char;
     public String name_kind;
     public String services;
@@ -11,6 +12,12 @@ public class DispChoice {
     public String stage;
 
     public String district_name;
+
+    public String dispatcher_login;
+
+    public int getChoice_id() {
+        return choice_id;
+    }
 
     public String getName_char() {
         return name_char;
@@ -48,7 +55,12 @@ public class DispChoice {
         return district_name;
     }
 
-    public DispChoice(String name_char, String name_kind, String services, int dead_amount, int people_amount, int dispatcher_id, String additional_services, String stage, String district_name) {
+    public String getDispatcher_login() {
+        return dispatcher_login;
+    }
+
+    public DispChoice(int choice_id, String name_char, String name_kind, String services, int dead_amount, int people_amount, int dispatcher_id, String additional_services, String stage, String district_name, String dispatcher_login) {
+        this.choice_id = choice_id;
         this.name_char = name_char;
         this.name_kind = name_kind;
         this.services = services;
@@ -58,5 +70,6 @@ public class DispChoice {
         this.additional_services = additional_services;
         this.stage = stage;
         this.district_name = district_name;
+        this.dispatcher_login = dispatcher_login;
     }
 }

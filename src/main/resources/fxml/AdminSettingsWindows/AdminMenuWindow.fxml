@@ -35,14 +35,6 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="btnOpenAuto" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openAutoOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К таблице служб реагирования на ЧС 🛠">
-         <font>
-            <Font name="Arial" size="14.0" />
-         </font>
-         <VBox.margin>
-            <Insets left="10.0" right="10.0" />
-         </VBox.margin>
-      </Button>
       <Button fx:id="btnOpenRels" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openRelationsOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К списку видов и относящихся к ним служб 🛠">
          <VBox.margin>
             <Insets left="10.0" right="10.0" />
@@ -51,7 +43,7 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="btnOpenServiceAutoRels" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openServiceAutoRels" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К списку служб и относящегося к ним транспорта 🛠">
+      <Button fx:id="btnOpenAuto" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openAutoOptions" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="К таблице транспорта служб 🛠">
          <font>
             <Font name="Arial" size="14.0" />
          </font>

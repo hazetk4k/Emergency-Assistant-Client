@@ -4,6 +4,8 @@ module com.example.eaclient {
     requires javafx.fxml;
     requires com.google.gson;
     requires jakarta.websocket.client;
+    requires org.apache.poi.ooxml;
+    requires org.apache.xmlbeans;
 
     opens com.example.eaclient.Controllers to javafx.fxml;
     opens com.example.eaclient.Controllers.AdminController to javafx.fxml;

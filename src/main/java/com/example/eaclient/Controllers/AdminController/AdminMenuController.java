@@ -116,8 +116,19 @@ public class AdminMenuController implements Initializable {
     }
 
     public void openAutoOptions(ActionEvent actionEvent) {
-    }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdminSettingsWindows/AutoViewWindow.fxml"));
+            Parent root = loader.load();
 
-    public void openServiceAutoRels(ActionEvent actionEvent) {
+            AutoViewController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            stage.setTitle("Управление транспортом служб");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
