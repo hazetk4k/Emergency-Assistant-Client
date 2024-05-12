@@ -6,16 +6,17 @@ import com.example.eaclient.Models.ReportWindowModels.Applicant;
 import com.example.eaclient.Models.ReportWindowModels.DispChoice;
 import com.example.eaclient.Models.ReportWindowModels.Report;
 import com.example.eaclient.Models.ReportWindowModels.ReportApplicant;
+import com.example.eaclient.Models.ReportWindowModels.ServiceTransportPair;
 import com.example.eaclient.Service.ServiceSingleton;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -55,8 +59,6 @@ public class ReportController {
     @FXML
     public ListView<String> recommendedServicesList;
     @FXML
-    public TextArea chosenServicesArea; // Сделано
-    @FXML
     public Button buttonConfirmServices;
     @FXML
     public Button buttonNextWindow;
@@ -82,8 +84,6 @@ public class ReportController {
     public Button buttonConfirmEndReacting;
     @FXML
     public Button buttonCallOtherServices;
-    @FXML
-    public TextArea otherChosenServicesArea;
     @FXML
     public Button btnCleanNewServices;
     @FXML
@@ -124,6 +124,21 @@ public class ReportController {
     public CheckBox checkDiedInDisaster;
     @FXML
     public TextField districtField;
+    @FXML
+    public TableView<ServiceTransportPair> tableChosenServices;
+    @FXML
+    public TableColumn<ServiceTransportPair, String> chosenServiceColumn;
+    @FXML
+    public TableColumn<ServiceTransportPair, String> chosenServiceAutoColumn;
+    @FXML
+    public TableView<ServiceTransportPair> tableOtherChosenServices;
+    @FXML
+    public TableColumn<ServiceTransportPair, String> otherChosenServiceColumn;
+    @FXML
+    public TableColumn<ServiceTransportPair, String> otherChosenServiceAutoColumn;
+    private List<ServiceTransportPair> serviceTransportPairs;
+
+    private List<ServiceTransportPair> otherServiceTransportPairs;
     private AllReportsTable reportTableData;
     private Report report;
     private Applicant applicant;
@@ -131,6 +146,8 @@ public class ReportController {
     private List<String> listOfRecommendedServices;
     private List<String> chars;
     private List<String> services;
+
+    private boolean allowAdding = true;
 
     private final ReportControllerRequests requestsManager = new ReportControllerRequests();
 
@@ -140,6 +157,7 @@ public class ReportController {
         loadCharsServicesDistricts();
         loadChoicesStage();
     }
+
 
     //кнопки подтверждения выбора
     public void confirmStartReacting(ActionEvent actionEvent) {
@@ -153,7 +171,7 @@ public class ReportController {
             return;
         }
 
-        if(districtsChoiceBox.getValue() == null){
+        if (districtsChoiceBox.getValue() == null) {
             WindowManager.showAlert("Не заполнены данные", "Необходимо выбрать район, к которому относится место происшествия", 2);
             return;
         }
@@ -180,13 +198,13 @@ public class ReportController {
     }
 
     public void confirmChosenServices(ActionEvent actionEvent) {
-        if (chosenServicesArea.getText().isEmpty()) {
-            chosenServicesArea.setStyle("-fx-prompt-text-fill: red");
-            chosenServicesArea.setPromptText("Выберите службы реагирования!");
+        if (!isAnyRecordFilled()) {
+            WindowManager.showAlert("Не выбрана запись!", "Необходимо выбрать службы реагирования на происшествие!", 2);
         } else {
+            String services = getAllRecordsAsString(tableChosenServices);
             JsonObject jsonObject = new JsonObject();
             LocalDateTime currentDateTime = LocalDateTime.now();
-            jsonObject.addProperty("services", chosenServicesArea.getText());
+            jsonObject.addProperty("services", services);
             jsonObject.addProperty("report_id", reportTableData.getId());
             jsonObject.addProperty("confirm_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             int flag = requestsManager.confirmStage(jsonObject, "/confirm-chosen-services");
@@ -198,6 +216,17 @@ public class ReportController {
             }
         }
 
+    }
+
+    public boolean isAnyRecordFilled() {
+        for (ServiceTransportPair pair : tableChosenServices.getItems()) {
+            if (!pair.getService().isEmpty() && !pair.getTransport().isEmpty()) {
+                System.out.println(pair.getService());
+                System.out.println(pair.getTransport());
+                return true;
+            }
+        }
+        return false;
     }
 
     public void confirmReceivedData(ActionEvent actionEvent) {
@@ -242,9 +271,10 @@ public class ReportController {
     }
 
     public void callOtherServices(ActionEvent actionEvent) {
+        String services = getAllRecordsAsString(tableOtherChosenServices);
         JsonObject jsonObject = new JsonObject();
         LocalDateTime currentDateTime = LocalDateTime.now();
-        jsonObject.addProperty("additional_services", otherChosenServicesArea.getText());
+        jsonObject.addProperty("additional_services", services);
         jsonObject.addProperty("report_id", reportTableData.getId());
         jsonObject.addProperty("additional_services_time", currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -274,9 +304,11 @@ public class ReportController {
 
     }
 
+
     // Загрузка стадий:
     public void stage1Load() { //определен
         // установка выбранных значений
+        allServicesList.setDisable(false);
         charChoiceBox.setValue(dispChoice.getName_char());
         kindComboBox.setValue(dispChoice.getName_kind());
         loadRecommendedServices(dispChoice.getName_kind());
@@ -302,6 +334,7 @@ public class ReportController {
     }
 
     public void stage2Load() {
+        allowAdding = false;
         recommendedServicesList.getItems().clear();
         stage1Load();
         buttonNextWindow.setDisable(false);
@@ -316,7 +349,8 @@ public class ReportController {
         } else recommendedServicesList2.getItems().add("Данный вид происшествия не определен");
 
         String chosenServices = dispChoice.getServices();
-        List<String> chosenServicesList = Arrays.asList(chosenServices.split("\n"));
+
+        List<String> chosenServicesList = extractServiceNames(chosenServices);
         List<CheckBox> checkBoxList = new ArrayList<>();
         for (String service : services) {
             if (!chosenServicesList.contains(service)) {
@@ -324,13 +358,19 @@ public class ReportController {
                 checkBoxList.add(checkBox);
             }
         }
+
         otherServicesList.getItems().clear();
         otherServicesList.getItems().addAll(checkBoxList);
+        //установка таблицы 1 + чекбоксы
+        setUpChosenServices(allServicesList, chosenServicesList);
+        tableChosenServices.getItems().clear();
+        addRecordsFromString(tableChosenServices, chosenServices);
+        allowAdding = true;
+        //установка слушателей второй таблицы
+        otherServiceTransportPairs = new ArrayList<>();
+        setCVFForChosenServiceColumn(otherChosenServiceColumn, otherChosenServiceAutoColumn);
+        setUpServicesListener(otherServicesList, tableOtherChosenServices, otherServiceTransportPairs);
 
-
-        //установка слушателей
-        setUpServices(otherChosenServicesArea, checkBoxList);
-        setUpChosenServices(allServicesList, dispChoice.getServices());
         //блокировать предыдущие действия
         btnCleanServices.setDisable(true);
         buttonConfirmServices.setDisable(true);
@@ -340,14 +380,12 @@ public class ReportController {
         typeField2.setText(report.getType());
         kindField2.setText(dispChoice.getName_kind());
         charField2.setText(dispChoice.getName_char());
-
         if (report.getAre_there_any_casualties()) {
             casualtiesField2.setText(report.getCasualties_amount());
         } else {
             casualtiesField2.setText("Отсутствуют");
         }
-        //TODO: Дополнить адрес районом
-        districtField.setText("Район");
+        districtField.setText(dispChoice.getDistrict_name());
         placeField2.setText(report.getPlace());
         String user_in_danger;
         districtField.setText(dispChoice.getStage());
@@ -438,12 +476,17 @@ public class ReportController {
     }
 
     public void stage4Load() {
+        allowAdding = false;
         stage3Load();
         //убрать подсказки
         buttonCallOtherServices.setStyle("-fx-background-color: #1e2f56;");
+
         // загрузка данных
-        setUpChosenServices(otherServicesList, dispChoice.getAdditional_services());
-        otherChosenServicesArea.setText(dispChoice.getAdditional_services());
+        String chosenServices = dispChoice.getAdditional_services();
+        setUpChosenServices(otherServicesList, extractServiceNames(chosenServices));
+        tableOtherChosenServices.getItems().clear();
+        addRecordsFromString(tableOtherChosenServices, chosenServices);
+
         //заблокировать старый функционал
         otherServicesList.setDisable(true);
         btnCleanNewServices.setDisable(true);
@@ -463,10 +506,12 @@ public class ReportController {
         buttonConfirmEndReacting.setDisable(true);
     }
 
+
     //Загрузка данных
     public void loadChoicesStage() {
         dispChoice = requestsManager.loadDispChoice(reportTableData.getId());
         if (dispChoice == null || Objects.equals(dispChoice.getStage(), "0")) {
+            allServicesList.setDisable(true);
             loadTypeKindChar();
             vboxConfirmStartReaction.setStyle("-fx-background-color: #aed2ca; -fx-border-color: #0cc715; -fx-border-width: 3;");
             buttonStartReacting.setStyle("-fx-background-color: #1e2f56; -fx-border-color: #0cc715; -fx-border-width: 3;");
@@ -509,7 +554,7 @@ public class ReportController {
         applicant = reportApplicantData.getApplicant();
 
         String fio = ApplicantProfileController.makeFIO(applicant.getName(), applicant.getSurname(), applicant.getPatronymic());
-        applicantNameAndPhone.setText(makeFIOAndPhoneString(fio, applicant.getPhone_number()));
+        applicantNameAndPhone.setText(requestsManager.makeFIOAndPhoneString(fio, applicant.getPhone_number()));
         placeNameField.setText(report.getPlace());
         dateTimeField.setText(report.getTimestamp());
         typeNameField.setText(report.getType());
@@ -544,8 +589,9 @@ public class ReportController {
             checkBoxList.add(checkBox);
         }
         allServicesList.getItems().addAll(checkBoxList);
-        chosenServicesArea.clear();
-        setUpServices(chosenServicesArea, checkBoxList);
+        serviceTransportPairs = new ArrayList<>();
+        setCVFForChosenServiceColumn(chosenServiceColumn, chosenServiceAutoColumn);
+        setUpServicesListener(allServicesList, tableChosenServices, serviceTransportPairs);
     }
 
     public void loadTypeKindChar() {
@@ -596,24 +642,46 @@ public class ReportController {
 
 
     // Дополнительные методы
-    public void setUpServices(TextArea area, List<CheckBox> checkBoxList) {
-        for (CheckBox checkBox : checkBoxList) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    area.appendText(checkBox.getText() + "\n");
-                } else {
-                    String text = area.getText().replace(checkBox.getText() + "\n", "");
-                    area.setText(text);
-                }
-            });
+    public void addRecordsFromString(TableView<ServiceTransportPair> table, String data) {
+        String[] records = data.split("\n");
+        for (String record : records) {
+
+            String[] parts = record.split("//");
+            if (parts.length == 2) {
+                ServiceTransportPair pair = new ServiceTransportPair(parts[0], parts[1]);
+                table.getItems().add(pair);
+            } else {
+                System.err.println("Неправильный формат записи: " + record);
+            }
         }
     }
 
-    public void setUpChosenServices(ListView<CheckBox> list, String chosenServices) {
-        String[] services = chosenServices.split("\n");
+    public List<String> extractServiceNames(String data) {
+        List<String> serviceNames = new ArrayList<>();
+        String[] records = data.split("\n");
+        for (String record : records) {
+            String[] parts = record.split("//");
+            if (parts.length >= 1) {
+                serviceNames.add(parts[0]);
+            } else {
+                System.err.println("Неправильный формат записи: " + record);
+            }
+        }
+        return serviceNames;
+    }
+
+    public String getAllRecordsAsString(TableView<ServiceTransportPair> table) {
+        StringBuilder sb = new StringBuilder();
+        for (ServiceTransportPair pair : table.getItems()) {
+            sb.append(pair.getService()).append("//").append(pair.getTransport()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public void setUpChosenServices(ListView<CheckBox> list, List<String> chosenServices) {
         for (CheckBox checkBox : list.getItems()) {
             String checkBoxText = checkBox.getText().trim();
-            for (String service : services) {
+            for (String service : chosenServices) {
                 if (service.trim().equals(checkBoxText)) {
                     checkBox.setSelected(true);
                     break;
@@ -627,13 +695,6 @@ public class ReportController {
         tooltip.setShowDelay(Duration.millis(500));
         tooltip.setShowDuration(Duration.INDEFINITE);
         return tooltip;
-    }
-
-    public String makeFIOAndPhoneString(String fio, String phone) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(fio);
-        stringBuilder.append(". Телефон: +375").append(phone);
-        return stringBuilder.toString();
     }
 
 
@@ -661,11 +722,12 @@ public class ReportController {
 
     public void cleanUpServices(ActionEvent actionEvent) {
         allServicesList.getItems().forEach(checkBox -> checkBox.setSelected(false));
-        chosenServicesArea.clear();
+        tableChosenServices.getItems().clear();
     }
 
     public void cleanUpNewServices(ActionEvent actionEvent) {
         otherServicesList.getItems().forEach(checkBox -> checkBox.setSelected(false));
+        tableChosenServices.getItems().clear();
     }
 
 
@@ -679,6 +741,7 @@ public class ReportController {
         secondWindowSupport.setVisible(false);
         firstWindowSupport.setVisible(true);
     }
+
 
     // Сделать весь функционал недоступным
     public void blockAllButtons() {
@@ -700,5 +763,77 @@ public class ReportController {
         buttonCallOtherServices.setDisable(true);
         buttonConfirmReceivedData.setDisable(true);
         buttonConfirmEndReacting.setDisable(true);
+    }
+
+
+    //Работа с таблицами
+    public void setCVFForChosenServiceColumn(TableColumn<ServiceTransportPair, String> serviceColumn, TableColumn<ServiceTransportPair, String> autoColumn) {
+        serviceColumn.setCellValueFactory(data -> data.getValue().serviceProperty());
+        autoColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTransport()));
+        autoColumn.setCellFactory(column -> {
+            return new TableCell<>() {
+                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+                {
+                    // Устанавливаем слушатель на изменение значения в ChoiceBox
+                    choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null && !newValue.isEmpty()) {
+                            // Получаем текущую выбранную строку таблицы и устанавливаем для нее выбранный транспорт
+                            ServiceTransportPair pair = getTableView().getItems().get(getIndex());
+                            pair.setTransport(newValue);
+                        }
+                    });
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setGraphic(null);
+                    } else {
+                        // Получаем текущую строку таблицы и загружаем в ChoiceBox список транспортов для выбранной службы
+                        ServiceTransportPair pair = getTableView().getItems().get(getIndex());
+                        List<String> autos = requestsManager.getServicesAutoByName(pair.getService(), districtsChoiceBox.getValue());
+                        if (autos.isEmpty()) {
+                            choiceBox.getItems().clear();
+                            choiceBox.getItems().add("Транспорт службы отсутствует");
+                        } else {
+                            choiceBox.getItems().setAll(autos);
+                            choiceBox.getSelectionModel().select(item);
+                        }
+                        setGraphic(choiceBox);
+                    }
+                }
+            };
+        });
+    }
+
+    public void setUpServicesListener(ListView<CheckBox> servicesList, TableView<ServiceTransportPair> chosenServicesTable, List<ServiceTransportPair> pairs) {
+        // Настройка слушателей для чекбоксов
+        for (CheckBox checkBox : servicesList.getItems()) {
+            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    // Добавляем выбранную службу и пустой транспорт в таблицу
+                    if (allowAdding) {
+                        ServiceTransportPair pair = new ServiceTransportPair(checkBox.getText(), "");
+                        pairs.add(pair);
+                        chosenServicesTable.getItems().add(pair);
+                    }
+                } else {
+                    // Удаляем запись о выбранной службе из таблицы
+                    ServiceTransportPair pairToRemove = null;
+                    for (ServiceTransportPair pair : pairs) {
+                        if (pair.getService().equals(checkBox.getText())) {
+                            pairToRemove = pair;
+                            break;
+                        }
+                    }
+                    if (pairToRemove != null) {
+                        pairs.remove(pairToRemove);
+                        chosenServicesTable.getItems().remove(pairToRemove);
+                    }
+                }
+            });
+        }
     }
 }

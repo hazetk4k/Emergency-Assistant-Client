@@ -8,6 +8,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -15,8 +17,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportController">
-   <VBox fx:id="firstWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportController">
+   <VBox fx:id="firstWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
       <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
          <font>
             <Font name="Arial Bold" size="16.0" />
@@ -379,17 +381,18 @@
                   <Font name="Arial" size="14.0" />
                </font>
             </Label>
-            <TextArea fx:id="chosenServicesArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Вызванные службы" VBox.vgrow="ALWAYS">
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
+            <TableView fx:id="tableChosenServices" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="chosenServiceColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="296.0" text="Выбранная служба" />
+                  <TableColumn fx:id="chosenServiceAutoColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="302.39996337890625" sortable="false" text="Вызванный транспорт" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </TextArea>
+            </TableView>
             <HBox>
                <Button fx:id="buttonConfirmServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#confirmChosenServices" style="-fx-background-color: #1e2f56;" text="Подтвердить вызов служб реагирования ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <font>
@@ -417,7 +420,7 @@
          </VBox>
       </HBox>
    </VBox>
-   <VBox fx:id="secondWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+   <VBox fx:id="secondWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений" textFill="WHITE" VBox.vgrow="ALWAYS">
          <font>
             <Font name="Arial Bold" size="16.0" />
@@ -428,7 +431,7 @@
       </Label>
       <Separator />
       <HBox VBox.vgrow="ALWAYS">
-         <VBox fx:id="vboxRecievedData" alignment="TOP_CENTER" style="-fx-background-color: #aed2ca;" HBox.hgrow="ALWAYS">
+         <VBox fx:id="vboxRecievedData" alignment="TOP_CENTER" prefWidth="514.0" style="-fx-background-color: #aed2ca;" HBox.hgrow="ALWAYS">
             <Label styleClass="bold-white-label" text="3. Передача данных службам по рации:">
                <font>
                   <Font name="Arial Bold" size="14.0" />
@@ -733,7 +736,7 @@
                   </VBox.margin>
                </Separator>
             </VBox>
-            <Label maxWidth="1.7976931348623157E308" text="Список дополнительных служб:" textFill="#1e2f56">
+            <Label maxWidth="1.7976931348623157E308" text="Будут вызваны дополнительные службы:" textFill="#1e2f56">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
@@ -744,13 +747,18 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </Label>
-            <TextArea fx:id="otherChosenServicesArea" editable="false">
+            <TableView fx:id="tableOtherChosenServices" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0">
+               <columns>
+                  <TableColumn fx:id="otherChosenServiceColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="296.0" text="Выбранная служба" />
+                  <TableColumn fx:id="otherChosenServiceAutoColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="302.39996337890625" sortable="false" text="Вызванный транспорт" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding></TextArea>
+            </TableView>
             <HBox>
                <Button fx:id="buttonCallOtherServices" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#callOtherServices" style="-fx-background-color: #1e2f56;" text="Вызвать дополнительные служб ✔" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <padding>

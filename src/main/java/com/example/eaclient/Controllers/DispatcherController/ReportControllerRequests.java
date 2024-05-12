@@ -154,4 +154,28 @@ public class ReportControllerRequests {
         }
         return flag;
     }
+
+    public List<String> getServicesAutoByName(String service_name, String district_name){
+        List<String> listOfAutos = new ArrayList<>();
+        try {
+            HttpResponse response = SimpleRequestManager.sendGetRequest("/get-auto-by-service", "service_name=" + service_name + "&" + "district_name=" + district_name);
+            int code = response.getResponseCode();
+            if (code == 200) {
+                String body = response.getResponseBody();
+                listOfAutos = gson.fromJson(body, List.class);
+            } else {
+                System.err.println("Ошибка загрузки!");
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
+        }
+        return listOfAutos;
+    }
+
+    public String makeFIOAndPhoneString(String fio, String phone) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(fio);
+        stringBuilder.append(". Телефон: +375").append(phone);
+        return stringBuilder.toString();
+    }
 }
