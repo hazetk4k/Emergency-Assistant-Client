@@ -26,6 +26,8 @@ module com.example.eaclient {
     exports com.example.eaclient.Models.ReportTableModels;
     exports com.example.eaclient.Models.ReportWindowModels;
     exports com.example.eaclient.Models.AdminModels;
+    exports com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage;
+    opens com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage to javafx.fxml;
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
+import com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage.ReportController;
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.ReportTableModels.AllReportsTable;
 import com.example.eaclient.Models.ReportTableModels.UpdateStageModel;

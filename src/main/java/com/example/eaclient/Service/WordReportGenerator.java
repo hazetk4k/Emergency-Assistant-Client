@@ -68,13 +68,21 @@ public class WordReportGenerator {
         if (lines.length == 1) {
             for (String line : lines) {
                 String[] service_auto = line.split("//");
-                generateParagraph(document, " " + service_auto[0] + ", транспорт: " + service_auto[1] + ".");
+                if (service_auto.length == 2) {
+                    generateParagraph(document, " " + service_auto[0] + ", транспорт: " + service_auto[1] + ".");
+                } else {
+                    generateParagraph(document, " " + service_auto[0] + ".");
+                }
             }
         } else {
             int counter = 1;
             for (String line : lines) {
                 String[] service_auto = line.split("//");
-                generateParagraph(document, counter + " " + service_auto[0] + ", транспорт: " + service_auto[1] + ".");
+                if (service_auto.length == 2) {
+                    generateParagraph(document, counter + " " + service_auto[0] + ", транспорт: " + service_auto[1] + ".");
+                } else {
+                    generateParagraph(document, counter + " " + service_auto[0] + ".");
+                }
                 counter++;
             }
         }
@@ -98,7 +106,7 @@ public class WordReportGenerator {
         generateParagraph(document, "");
 
         generateBoldParagraph(document, "3. Получение данных об обстановке на месте происшествия");
-        generateParagraph(document, "Время получения данных: " + timings.getReceived_data_time() + ".");
+        generateBoldParagraph(document, "Время получения данных: " + timings.getReceived_data_time() + ".");
         generateParagraph(document, "");
         if (dispChoice.getPeople_amount() == 0) {
             generateParagraph(document, "На месте происшествия людей не находилось.");
@@ -114,24 +122,20 @@ public class WordReportGenerator {
         generateParagraph(document, "");
 
         generateBoldParagraph(document, "4. Принятие решения по вызову дополнительных служб");
-        generateParagraph(document, "Время принятия решения: " + timings.getCall_add_services_time() + ".");
+        generateBoldParagraph(document, "Время принятия решения: " + timings.getCall_add_services_time() + ".");
         generateParagraph(document, "");
+
         if (Objects.equals(dispChoice.getAdditional_services(), "") || dispChoice.getAdditional_services() == null) {
             generateParagraph(document, "Дополнительные службы не были вызваны.");
         } else {
             generateParagraph(document, "Вызваны дополнительные службы: ");
             String[] lines_additional = dispChoice.getAdditional_services().split("\n");
-            if (lines_additional.length == 1) {
-                for (String line : lines_additional) {
-                    String[] service_auto = line.split("//");
+            for (String line : lines_additional) {
+                String[] service_auto = line.split("//");
+                if (service_auto.length == 2) {
                     generateParagraph(document, service_auto[0] + ", транспорт: " + service_auto[1] + ".");
-                }
-            } else {
-                int i = 1;
-                for (String line : lines_additional) {
-                    String[] service_auto = line.split("//");
-                    generateParagraph(document, i + " " + service_auto[0] + ", транспорт: " + service_auto[1] + ".");
-                    i++;
+                } else {
+                    generateParagraph(document, service_auto[0] + ", транспорт: .");
                 }
             }
         }
@@ -139,13 +143,17 @@ public class WordReportGenerator {
         generateParagraph(document, "");
 
         generateBoldParagraph(document, "5. Сообщение о ликвидации происшествия");
-        generateParagraph(document, "Время окончания действий по реагированию на происшествие: " + timings.getEnd_time() + ".");
+        generateBoldParagraph(document, "Время окончания действий по реагированию на происшествие: " + timings.getEnd_time() + ".");
 
         generateParagraph(document, "");
 
         generateParagraph(document, "Принятие решений по реагированию на происшествие выполнял диспетчер c логином «" + dispChoice.getDispatcher_login() + "».");
         generateParagraph(document, "Отчет составлен диспетчером, владеющим учетной записью системы под логином «" + ServiceSingleton.getInstance().getCurrentUser() + "».");
-        saveDocument(document, Integer.toString(report_id));
+        try {
+            saveDocument(document, Integer.toString(report_id));
+        }catch (Exception e){
+            throw e;
+        }
     }
 
     private void generateParagraph(XWPFDocument document, String text) {

@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1077.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage.ReportController">
    <VBox fx:id="firstWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
       <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1e2f56;">
          <children>
@@ -410,7 +410,7 @@
                      <Insets bottom="10.0" left="10.0" right="10.0" />
                   </HBox.margin>
                </Button>
-               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveToNextWindow" style="-fx-background-color: #1e2f56;" text="Перейти к следующим действиям ►" textFill="WHITE" HBox.hgrow="ALWAYS">
+               <Button fx:id="buttonNextWindow" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openSecondWindow" style="-fx-background-color: #1e2f56;" text="Перейти к следующим действиям ►" textFill="WHITE" HBox.hgrow="ALWAYS">
                   <font>
                      <Font name="Arial Bold" size="14.0" />
                   </font>
@@ -427,25 +427,28 @@
    </VBox>
    <VBox fx:id="secondWindowSupport" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #1e2f56;">
-         <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;" styleClass="bold-white-label" text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </Label>
-            <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-            <Button fx:id="buttonMakeReport" disable="true" mnemonicParsing="false" onAction="#makeReport" style="-fx-background-color: #ffffff;" text="Создать отчет DOCX 📑" textFill="#1e2f56" visible="false" HBox.hgrow="ALWAYS">
-               <HBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </HBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Button>
-         </children>
+         <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1e2f56;"
+                styleClass="bold-white-label"
+                text="Информационная поддержка, полученная в ходе анализа переданных заявителем сведений"
+                textFill="WHITE">
+            <font>
+               <Font name="Arial Bold" size="16.0"/>
+            </font>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+         </Label>
+         <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+         <Button fx:id="buttonMakeReport" disable="true" mnemonicParsing="false" onAction="#makeReport"
+                 style="-fx-background-color: #ffffff;" text="Создать отчет DOCX 📑" textFill="#1e2f56" visible="false"
+                 HBox.hgrow="ALWAYS">
+            <HBox.margin>
+               <Insets left="10.0" right="10.0"/>
+            </HBox.margin>
+            <font>
+               <Font name="Arial Bold" size="14.0"/>
+            </font>
+         </Button>
       </HBox>
       <Separator />
       <HBox VBox.vgrow="ALWAYS">

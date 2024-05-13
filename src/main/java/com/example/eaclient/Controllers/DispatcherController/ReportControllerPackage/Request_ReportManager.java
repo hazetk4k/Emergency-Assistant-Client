@@ -1,4 +1,4 @@
-package com.example.eaclient.Controllers.DispatcherController;
+package com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage;
 
 import com.example.eaclient.Models.ReportWindowModels.Applicant;
 import com.example.eaclient.Models.ReportWindowModels.DataReportApplicant;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ReportControllerRequests {
+public class Request_ReportManager {
     private final Gson gson = new Gson();
 
     public ReportApplicant loadReportApplicantData(int id) {
@@ -170,12 +170,5 @@ public class ReportControllerRequests {
             System.err.println("Ошибка при выполнении HTTP-запроса: " + e.getMessage());
         }
         return listOfAutos;
-    }
-
-    public String makeFIOAndPhoneString(String fio, String phone) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(fio);
-        stringBuilder.append(". Телефон: +375").append(phone);
-        return stringBuilder.toString();
     }
 }
