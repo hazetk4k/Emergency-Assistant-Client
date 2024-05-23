@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="637.0" prefWidth="1313.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.StatisticsControllerPackage.StatisticsController">
+   <children>
+      <VBox prefHeight="597.0" prefWidth="1314.0">
+         <children>
+            <TableView fx:id="finishedReportsTable" prefHeight="410.0" prefWidth="1266.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="report_id" editable="false" minWidth="4.0000001192092896" prefWidth="97.60000765323639" text="№ Заявления" />
+                <TableColumn fx:id="receive_time" prefWidth="221.59999084472656" text="Время сообщения о происшествии" />
+                  <TableColumn fx:id="end_actions_time" minWidth="0.0" prefWidth="212.00006103515625" text="Время ликвидации происшествия" />
+                  <TableColumn fx:id="address_district" minWidth="0.0" prefWidth="220.800048828125" text="Район, адрес" />
+                  <TableColumn fx:id="type_name" prefWidth="242.39996337890625" text="Причина вызова" />
+                  <TableColumn fx:id="all_services" prefWidth="328.79986572265625" text="Привлеченные силы" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <MenuBar>
+               <menus>
+                  <Menu fx:id="btnMakeStatisticsWord" mnemonicParsing="false" onAction="#makeStaticsReport" text="Создать отчет по сводке" />
+                  <Menu fx:id="btnOpensStatistics" mnemonicParsing="false" onAction="#openStatics" text="Открыть статистику за день" />
+               </menus>
+            </MenuBar>
+         </children>
+      </VBox>
+      <VBox prefHeight="602.0" prefWidth="1314.0">
+         <children>
+            <HBox prefHeight="643.0" prefWidth="1314.0" visible="false">
+               <children>
+                  <VBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                     <children>
+                        <PieChart VBox.vgrow="ALWAYS" />
+                        <TableView prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn prefWidth="233.60000306367874" text="Характер ЧС" />
+                            <TableColumn prefWidth="168.8000030517578" text="Количество происшествий" />
+                              <TableColumn prefWidth="246.39996337890625" text="Количество погибших в происшествии" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                     <children>
+                        <BarChart VBox.vgrow="ALWAYS">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" upperBound="10.0" />
+                          </yAxis>
+                        </BarChart>
+                        <TableView prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TableColumn prefWidth="106.39999085664749" text="Район" />
+                              <TableColumn prefWidth="190.40003967285156" text="Общее количество вызовов" />
+                              <TableColumn prefWidth="291.199951171875" text="Вызванные службы" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Вернуться к общей сводке" />
+              </menus>
+            </MenuBar>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

@@ -128,8 +128,7 @@ public class TypeViewController {
             String type_name = chosenType.getText();
             System.out.println(type_name);
             try {
-                String encodedWord = URLEncoder.encode(type_name, StandardCharsets.UTF_8);
-                HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-type", "type_name=" + encodedWord);
+                HttpResponse response = SimpleRequestManager.sendDeleteRequest("/delete-type", "type_name=" + type_name);
                 int code = response.getResponseCode();
                 if (code == 200) {
                     showAlert("Успешно!", "Тип ЧС с именем " + type_name + " был удален.", 1);

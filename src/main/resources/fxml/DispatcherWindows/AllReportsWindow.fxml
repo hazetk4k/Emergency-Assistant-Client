@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1400.0" stylesheets="@../../css/ReportsStylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.eaclient.Controllers.DispatcherController.AllReportsController">
 
-    <Button fx:id="toggleMenuButton" onAction="#toggleMenu" prefWidth="230.0" text="☰" />
+    <Button fx:id="toggleMenuButton" layoutX="20.0" layoutY="1.0" onAction="#toggleMenu" prefWidth="230.0" text="☰" />
 
     <TableView fx:id="tableView" layoutX="19.0" layoutY="30.0" prefHeight="581.0" prefWidth="818.0" styleClass="custom-table" stylesheets="@../../css/TableStyle.css" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="19.800000000000068" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="30.0">
         <columns>
@@ -24,10 +26,21 @@
         </columnResizePolicy>
     </TableView>
 
-    <VBox fx:id="burgerMenu" alignment="CENTER" layoutY="30" prefHeight="390.0" prefWidth="230.0" spacing="10" style="-fx-background-color: lightgray;" stylesheets="@../../css/ReportsStylesheet.css" visible="false">
-        <Button fx:id="toReportsListButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#toReportsList" text="К списку заявлений 📋" visible="false" />
-        <Button fx:id="openSaveDirectoryButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#openSaveDirectory" text="К отчетам 📃" />
-        <Button fx:id="toAuthWindowButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#toAuthWindow" text="Выйти 🚪" />
+    <VBox fx:id="burgerMenu" alignment="CENTER" layoutX="20.0" layoutY="30" prefHeight="390.0" prefWidth="230.0" spacing="10" style="-fx-background-color: lightgray;" stylesheets="@../../css/ReportsStylesheet.css" visible="false">
+        <Button fx:id="btnOpenStatistics" maxWidth="Infinity" mnemonicParsing="false" onAction="#openStatistics" text="К дневной сводке 📋" textFill="#192748">
+         <font>
+            <Font name="Arial Bold" size="14.0" />
+         </font></Button>
+        <Button fx:id="openSaveDirectoryButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#openSaveDirectory" text="К отчетам 📃" textFill="#192748">
+         <font>
+            <Font name="Arial Bold" size="14.0" />
+         </font></Button>
+      <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS" />
+        <Button fx:id="toAuthWindowButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#toAuthWindow" text="Выйти 🚪" textFill="#192748">
+         <font>
+            <Font name="Arial Bold" size="14.0" />
+         </font></Button>
     </VBox>
+   <ChoiceBox fx:id="filterStatusChoiceBox" disable="true" layoutX="1058.0" layoutY="1.0" prefHeight="26.0" prefWidth="320.0" visible="false" AnchorPane.rightAnchor="22.0" />
 
 </AnchorPane>

@@ -79,7 +79,7 @@ public class AuthController {
                 //сверяем статус
                 if (Objects.equals(status, "1")) {
                     ServiceSingleton.getInstance().setCurrentUser(login);
-                    manager.openFxmlScene("/fxml/AdminSettingsWindows/AdminMenuWindow.fxml", "Меню настройки базы данных системы");
+                    manager.openFxmlScene("/fxml/AdminSettingsWindows/AdminMenuWindow.fxml", "Меню настройки базы данных ПС");
                     ServiceSingleton.getInstance().setIfClosed(true);
                     Stage stage = (Stage) button.getScene().getWindow();
                     stage.close();

@@ -17,6 +17,8 @@ public class WebSocketClient {
     private ExecutorService executor;
     private Timer pingTimer;
 
+    private static final String BASE_URL = "ws://localhost:8085/";
+
     private WebSocketClient() {
         container = ContainerProvider.getWebSocketContainer();
     }
@@ -54,7 +56,7 @@ public class WebSocketClient {
         executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             try {
-                session = container.connectToServer(new WebSocketClientEndpoint(), new URI("ws://localhost:8085/"));
+                session = container.connectToServer(new WebSocketClientEndpoint(), new URI(BASE_URL));
                 startPingTimer();
             } catch (Exception e) {
                 System.out.println("Error connecting to server: " + e.getMessage());

@@ -1,6 +1,7 @@
 package com.example.eaclient.Controllers.DispatcherController;
 
 import com.example.eaclient.Controllers.DispatcherController.ReportControllerPackage.ReportController;
+import com.example.eaclient.Controllers.DispatcherController.StatisticsControllerPackage.StatisticsController;
 import com.example.eaclient.Controllers.WindowManager;
 import com.example.eaclient.Models.ReportTableModels.AllReportsTable;
 import com.example.eaclient.Models.ReportTableModels.UpdateStageModel;
@@ -28,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -60,19 +62,17 @@ public class AllReportsController implements Initializable {
     @FXML
     public TableColumn<AllReportsTable, String> stage_name;
     @FXML
-    public Button toReportsListButton;
-    @FXML
     public Button openSaveDirectoryButton;
     @FXML
     public Button toAuthWindowButton;
+    public Button btnOpenStatistics;
+    public ChoiceBox<String> filterStatusChoiceBox;
 
     Thread webSocketThread;
 
     WindowManager manager = new WindowManager();
 
     private final Gson gson = new Gson();
-
-    //TODO: Доработать данные в и интерфейсе
 
     public void toggleMenu() {
         TranslateTransition menuAnimation = new TranslateTransition(Duration.millis(300), burgerMenu);
@@ -87,10 +87,6 @@ public class AllReportsController implements Initializable {
             toggleMenuButton.setText("☰");
             menuAnimation.play();
         }
-    }
-
-    public void toReportsList(ActionEvent actionEvent) {
-
     }
 
     public void openSaveDirectory(ActionEvent actionEvent) {
@@ -224,4 +220,21 @@ public class AllReportsController implements Initializable {
         }
     }
 
+    public void openStatistics(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DispatcherWindows/StatisticsWindow.fxml"));
+            Parent root = loader.load();
+
+            StatisticsController controller = loader.getController();
+            controller.initData();
+
+            Stage stage = new Stage();
+            //Добавить дату
+            stage.setTitle("Статистика за сегодняшний день");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

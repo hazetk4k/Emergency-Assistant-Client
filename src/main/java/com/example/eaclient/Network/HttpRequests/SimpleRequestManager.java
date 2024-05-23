@@ -29,6 +29,7 @@ public class SimpleRequestManager {
     }
 
     public static HttpResponse sendGetRequest(String endpoint) throws IOException {
+
         return sendGetRequest(endpoint, null);
     }
 
@@ -38,6 +39,7 @@ public class SimpleRequestManager {
         if (queryParams != null && !queryParams.isEmpty()) {
             urlString += "?" + encodedParams;
         }
+
         return RequestExecutor.executeRequest(urlString, "GET", null);
     }
 
@@ -52,11 +54,13 @@ public class SimpleRequestManager {
 
     public static HttpResponse sendPostRequest(String endpoint, String requestBody) throws IOException {
         String urlString = BASE_URL + endpoint;
+
         return RequestExecutor.executeRequest(urlString, "POST", requestBody);
     }
 
     public static HttpResponse sendPutRequest(String endpoint, String requestBody) throws IOException {
         String urlString = BASE_URL + endpoint;
+
         return RequestExecutor.executeRequest(urlString, "PUT", requestBody);
     }
 }
